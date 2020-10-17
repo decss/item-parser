@@ -9,6 +9,11 @@
             "homepage": "https://github.com/decss"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "ItemParser\\": "src"
+        }
+    },
     "require": {
         "php": ">=5.5",
         "parsecsv/php-parsecsv": "^1.2"
