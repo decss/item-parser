@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace ItemParser;
 
 use ParseCsv\Csv;
@@ -8,31 +8,16 @@ use ItemParser\Helpers;
 
 class Parser
 {
-    const FIELD_TEXT    = 1;
-    const FIELD_OPTION  = 2;
-    const FIELD_IMAGE   = 3;
 
     private $rowsCnt;
     private $colsCnt;
     private $fields;
     private $data;
-    private $skipFirst  = false;
+    private $skipRows   = [];
 
-    // public function textField($index, $name)
-    // {
-    //     return $this->field($index, $name, 'text');
-    // }
-    // public function optionField($index, $name, $options = [])
-    // {
-    //     return $this->field($index, $name, 'option', $options);
-    // }
-    // public function imageField($index, $name)
-    // {
-    //     return $this->field($index, $name, 'image');
-    // }
-    public function field($index, $name = null, $type = 'text', $options = [])
+    public function field($index, $name = null, $type = 'text', $params = [])
     {
-        $field = new Field($name, $type, $options);
+        $field = new Field($name, $type, $params);
         $this->fields[$index] = $field;
 
         return $field;
@@ -41,6 +26,16 @@ class Parser
     {
         return $this->fields;
     }
+
+    public function skipRows($skipRows)
+    {
+        if (!is_array($skipRows)) {
+            $skipRows = [intval($skipRows)];
+        }
+        $this->skipRows = $skipRows;
+    }
+
+
 
 
     public function setCsvPath($path)
@@ -52,7 +47,7 @@ class Parser
     public function setCsvContent($content)
     {
         $csv            = new Csv();
-        $encoding       = Helpers::mb_detect_encoding($content);
+        $encoding       = Helpers::mbDetectEncoding($content);
         $csv->heading   = false;
         $csv->use_mb_convert_encoding = true;
         $csv->encoding($encoding, 'UTF-8');
@@ -72,23 +67,26 @@ class Parser
     public function parse()
     {
         $result = [];
+        $missing = [];
 
-        for ($r = 0; $r < $this->rowsCnt; $r++) { 
+        for ($r = 0; $r < $this->rowsCnt; $r++) {
             $rowFields  = $this->data[$r];
             $valid      = true;
-            $skip       = false;
+            $skip       = in_array($r, $this->skipRows) ? true : false;
             $fields     = [];
 
-            foreach ($rowFields as $f => $field) {
-                $fields[$f] = Field::parse($this->fields[$f], $field);
-             
-                if ($this->fields[$f] && !$fields[$f]['valid']) {
-                    $valid = false;
+            foreach ($rowFields as $f => $text) {
+                $fieldObj = $this->fields[$f];
+                list($fields[$f], $fieldMissing) = Field::parse($fieldObj, $text);
+
+                if (!$skip && $fieldMissing) {
+                    Helpers::mergeMissing($missing[$f], $fieldMissing);
                 }
 
-                // $fields[$f] = $this->fields[$f]->parse($field);
+                if ($fieldObj && !$fields[$f]['valid']) {
+                    $valid = false;
+                }
             }
-            // dbg($fields);
 
             $result[] = [
                 'row'       => $r,
@@ -96,10 +94,17 @@ class Parser
                 'skip'      => $skip,
                 'fields'    => $fields,
             ];
-
         }
 
-        return $result;
+        // Remove duplicates
+        foreach ($missing as $f => $opts) {
+            $missing[$f] = array_unique($missing[$f]);
+        }
+
+        return [
+            'result' => $result,
+            'missing' => $missing,
+        ];
     }
 
 

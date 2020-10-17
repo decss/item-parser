@@ -1,22 +1,24 @@
-<?php 
+<?php
 namespace ItemParser;
 
 use ItemParser\Helpers;
 
 class Field
 {
+    const TYPE_TEXT = 'text';
+    const TYPE_PARAM = 'param';
     private $name;
     private $type;
     private $required = false;
-    private $options = null;
+    private $params = null;
 
-    public function __construct($name, $type = 'text', $options = [])
+    public function __construct($name, $type = self::TYPE_TEXT, $params = [])
     {
         $this->name($name);
         $this->type($type);
 
-        if ($type == 'option') {
-            $this->options($options);
+        if ($type == self::TYPE_PARAM) {
+            $this->params($params);
         }
     }
 
@@ -30,9 +32,9 @@ class Field
         $this->type = $type;
         return $this;
     }
-    public function options($options)
+    public function params($params)
     {
-        $this->options = $options;
+        $this->params = $params;
         return $this;
     }
     public function required($required = true)
@@ -46,9 +48,9 @@ class Field
         $this->type('text');
         return $this;
     }
-    public function option()
+    public function param()
     {
-        $this->type('option');
+        $this->type(self::TYPE_PARAM);
         return $this;
     }
 
@@ -73,18 +75,19 @@ class Field
     {
         return $this->type;
     }
-    public function getOptions()
+    public function getParams()
     {
-        return $this->options;
+        return $this->params;
     }
 
-    public static function parse(Field $field = null, $text)
+    public static function parse(Field $field = null, $text = '', $opts = [])
     {
         $result = [
             'text'  => $text,
             'name'  => null,
             'type'  => null,
         ];
+        $unknownOpts = [];
 
         if ($field) {
             $result['name'] = $field->getName();
@@ -102,14 +105,19 @@ class Field
                 $result['valid'] = $valid;
                 $result['value'] = $value;
 
-            // Options field
-            } elseif ($field->is('option')) {
+            // Params field
+            } elseif ($field->is(self::TYPE_PARAM)) {
                 $valid = true;
                 $values = [];
                 $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
 
                 $i = 0;
                 foreach ($textArr as $valText) {
+                    $valText = trim($valText);
+                    if (!$valText) {
+                        continue;
+                    }
+
                     $values[$i] = [
                         'valid'     => false,
                         'replaced'  => false,
@@ -120,30 +128,63 @@ class Field
 
                     // $valValid = false;
                     $replaced = false;
-                    $option = null;
+                    $param = null;
 
                     // TODO: Unknown opts search
                     // $replaced = true;
-                    // $option = [];
+                    // $param = [];
 
-                    // options search
+                    // Params search
                     if (!$replaced) {
-                        $option = Helpers::findInOptions($valText, $field->getOptions());
+                        $param = Helpers::findInParams($valText, $field->getParams());
                     }
 
-                    if ($option) {
+                    if ($param) {
                         $values[$i]['valid'] = true;
                         $values[$i]['replaced'] = $replaced;
-                        $values[$i]['id'] = $option['id'];
-                        $values[$i]['value'] = $option['value'];
+                        $values[$i]['id'] = $param['id'];
+                        $values[$i]['value'] = $param['value'];
+
+                    // Unknown opts
+                    } else {
+                        $unknownOpts[] = $valText;
                     }
 
                     if (!$values[$i]['valid']) {
                         $valid = false;
                     }
-                    
+
                     $i++;
                 }
+
+                    // Проверяем на повторки
+                    /*
+                    foreach ($field['value'] as $i => $value) {
+                        if ($valuesArr && in_array($value['value'], $valuesArr)) {
+                            $field['value'][$i]['valid'] = false;
+                            // Если не стоит флаг "Игнорировать ошибки"
+                            if (!$opts['skipOptErr']) {
+                                $fieldValid = false;
+                            }
+                        }
+                        $valuesArr[]    = $value['value'];
+                    }
+                    // Проверяем есть ли хотя бы 1н валидный параметр (валидный и не пропущенный)
+                    $goodFields = false;
+                    foreach ($field['value'] as $i => $value) {
+                        if ($value['valid'] && !$value['skip']) {
+                            $goodFields = true;
+                        }
+                    }
+                    if (!$goodFields) {
+                        $field['optError'] = true; // Специальный флаг только для полей opts, показывает что нет ни одного валидного параметра или все параметры skipped
+                        $fieldValid = false;
+                    }
+
+                    // Добавляем optionId
+                    $field['optId'] = $optionId;
+                    $field['batch'] = $opts['isBatch'];
+                    */
 
 
                 $result['valid'] = $valid;
@@ -153,7 +194,7 @@ class Field
 
         }
 
-        return $result;
+        return [$result, $unknownOpts];
     }
 
 }

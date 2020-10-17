@@ -16,6 +16,7 @@
     },
     "require": {
         "php": ">=5.5",
-        "parsecsv/php-parsecsv": "^1.2"
+        "ext-mbstring": "*",
+        "parsecsv/php-parsecsv": "^1.2",
     }
 }
