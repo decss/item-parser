@@ -1,0 +1,16 @@
+{
+    "name": "decss/itemparser",
+    "description": "Item/Product parser from CSV or array",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Yaroslav P",
+            "homepage": "https://github.com/decss"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "parsecsv/php-parsecsv": "^1.2"
+    }
+}
