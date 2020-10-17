@@ -1,5 +1,5 @@
 {
-    "name": "decss/itemparser",
+    "name": "decss/item-parser",
     "description": "Item/Product parser from CSV or array",
     "license": "MIT",
     "type": "library",
