@@ -15,9 +15,9 @@ class Parser
     private $data;
     private $skipRows   = [];
 
-    public function field($index, $name = null, $type = 'text', $params = [])
+    public function field($index, $name = null, $type = 'text', $params = [], $replacements = [])
     {
-        $field = new Field($name, $type, $params);
+        $field = new Field($name, $type, $params, $replacements);
         $this->fields[$index] = $field;
 
         return $field;

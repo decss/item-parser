@@ -10,15 +10,17 @@ class Field
     private $name;
     private $type;
     private $required = false;
-    private $params = null;
+    private $params = [];
+    private $replacements = [];
 
-    public function __construct($name, $type = self::TYPE_TEXT, $params = [])
+    public function __construct($name, $type = self::TYPE_TEXT, $params = [], $replacements = [])
     {
         $this->name($name);
         $this->type($type);
 
         if ($type == self::TYPE_PARAM) {
             $this->params($params);
+            $this->replacements($replacements);
         }
     }
 
@@ -35,6 +37,11 @@ class Field
     public function params($params)
     {
         $this->params = $params;
+        return $this;
+    }
+    public function replacements($replacements)
+    {
+        $this->replacements = $replacements;
         return $this;
     }
     public function required($required = true)
@@ -79,6 +86,24 @@ class Field
     {
         return $this->params;
     }
+    public function getReplacements()
+    {
+        return $this->replacements;
+    }
+
+    public function findInReplacements($valText)
+    {
+        foreach ($this->getReplacements() as $replacement => $id) {
+            if ($replacement == $valText) {
+                if ($id == -1) {
+                    return -1;
+                } elseif ($id > 0) {
+                    return Helpers::getById($id, $this->getParams());
+                }
+            }
+        }
+        return null;
+    }
 
     public static function parse(Field $field = null, $text = '', $opts = [])
     {
@@ -107,7 +132,7 @@ class Field
 
             // Params field
             } elseif ($field->is(self::TYPE_PARAM)) {
-                $valid = true;
+                $valid = false;
                 $values = [];
                 $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
 
@@ -118,78 +143,65 @@ class Field
                         continue;
                     }
 
-                    $values[$i] = [
-                        'valid'     => false,
-                        'replaced'  => false,
-                        'id'        => null,
-                        'value'     => null,
-                        'text'      => $valText,
-                    ];
+                    $pValid = false;
+                    $pSkip = false;
+                    $pReplace = false;
+                    $param = [];
 
-                    // $valValid = false;
-                    $replaced = false;
-                    $param = null;
-
-                    // TODO: Unknown opts search
-                    // $replaced = true;
-                    // $param = [];
-
-                    // Params search
-                    if (!$replaced) {
+                    $replacement = $field->findInReplacements($valText);
+                    if ($replacement === -1) {
+                        $pSkip = true;
+                    } elseif ($replacement && is_array($replacement)) {
+                        $pReplace = true;
+                        $param = $replacement;
+                    }
+                    if (!$param) {
                         $param = Helpers::findInParams($valText, $field->getParams());
                     }
 
                     if ($param) {
-                        $values[$i]['valid'] = true;
-                        $values[$i]['replaced'] = $replaced;
-                        $values[$i]['id'] = $param['id'];
-                        $values[$i]['value'] = $param['value'];
-
-                    // Unknown opts
+                        $pValid = true;
                     } else {
                         $unknownOpts[] = $valText;
                     }
 
-                    if (!$values[$i]['valid']) {
-                        $valid = false;
-                    }
+                    // Always valid if skipped
+                    // $pValid = $pSkip ? true : $pValid;
+
+                    $values[$i] = [
+                        'valid'     => $pValid,
+                        'skip'      => $pSkip,
+                        'replace'   => $pReplace,
+                        'id'        => $param['id'],
+                        'value'     => $param['value'],
+                        'text'      => $valText,
+                    ];
 
                     $i++;
                 }
 
-                    // Проверяем на повторки
-                    /*
-                    foreach ($field['value'] as $i => $value) {
-                        if ($valuesArr && in_array($value['value'], $valuesArr)) {
-                            $field['value'][$i]['valid'] = false;
-                            // Если не стоит флаг "Игнорировать ошибки"
-                            if (!$opts['skipOptErr']) {
-                                $fieldValid = false;
-                            }
-                        }
-                        $valuesArr[]    = $value['value'];
+                // Check and skip duplicates
+                $tmp = [];
+                foreach ($values as $i => $value) {
+                    if ($value['valid'] == false || $value['skip'] == true) {
+                        continue;
                     }
-                    // Проверяем есть ли хотя бы 1н валидный параметр (валидный и не пропущенный)
-                    $goodFields = false;
-                    foreach ($field['value'] as $i => $value) {
-                        if ($value['valid'] && !$value['skip']) {
-                            $goodFields = true;
-                        }
+                    if (!in_array($value['id'], $tmp)) {
+                        $tmp[] = $value['id'];
+                    } else {
+                        $values[$i]['skip'] = true;
                     }
-                    if (!$goodFields) {
-                        $field['optError'] = true; // Специальный флаг только для полей opts, показывает что нет ни одного валидного параметра или все параметры skipped
-                        $fieldValid = false;
-                    }
+                }
 
-                    // Добавляем optionId
-                    $field['optId'] = $optionId;
-                    $field['batch'] = $opts['isBatch'];
-                    */
-
+                // Check for at least one valid and not skipped param
+                foreach ($values as $i => $value) {
+                    if ($value['valid'] == true && $value['skip'] == false) {
+                        $valid = true;
+                    }
+                }
 
                 $result['valid'] = $valid;
                 $result['value'] = $values;
-
             }
 
         }

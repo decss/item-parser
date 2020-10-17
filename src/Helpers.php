@@ -113,4 +113,15 @@ class Helpers
 
         return true;
     }
+
+    public static function getById($id, $array)
+    {
+        foreach ($array as $item) {
+            if ($id && $id == $item['id']) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
 }
