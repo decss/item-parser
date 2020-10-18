@@ -1,4 +1,5 @@
 <?php
+
 namespace ItemParser;
 
 use ParseCsv\Csv;
@@ -8,12 +9,11 @@ use ItemParser\Helpers;
 
 class Parser
 {
-
     private $rowsCnt;
     private $colsCnt;
     private $fields;
     private $data;
-    private $skipRows   = [];
+    private $skipRows = [];
 
     public function field($index, $name = null, $type = 'text', $params = [], $replacements = [])
     {
@@ -22,6 +22,7 @@ class Parser
 
         return $field;
     }
+
     public function getFields()
     {
         return $this->fields;
@@ -35,9 +36,6 @@ class Parser
         $this->skipRows = $skipRows;
     }
 
-
-
-
     public function setCsvPath($path)
     {
         $content = file_get_contents($path);
@@ -46,9 +44,9 @@ class Parser
 
     public function setCsvContent($content)
     {
-        $csv            = new Csv();
-        $encoding       = Helpers::mbDetectEncoding($content);
-        $csv->heading   = false;
+        $csv = new Csv();
+        $encoding = Helpers::mbDetectEncoding($content);
+        $csv->heading = false;
         $csv->use_mb_convert_encoding = true;
         $csv->encoding($encoding, 'UTF-8');
         $csv->auto($content, true, null, ';,');
@@ -58,11 +56,10 @@ class Parser
 
     public function setArray($array)
     {
-        $this->rowsCnt  = count($array);
-        $this->colsCnt  = count($array[0]);
-        $this->data     = $array;
+        $this->rowsCnt = count($array);
+        $this->colsCnt = count($array[0]);
+        $this->data = $array;
     }
-
 
     public function parse()
     {
@@ -70,10 +67,10 @@ class Parser
         $missing = [];
 
         for ($r = 0; $r < $this->rowsCnt; $r++) {
-            $rowFields  = $this->data[$r];
-            $valid      = true;
-            $skip       = in_array($r, $this->skipRows) ? true : false;
-            $fields     = [];
+            $rowFields = $this->data[$r];
+            $valid = true;
+            $skip = in_array($r, $this->skipRows) ? true : false;
+            $fields = [];
 
             foreach ($rowFields as $f => $text) {
                 $fieldObj = $this->fields[$f];
@@ -89,16 +86,16 @@ class Parser
             }
 
             $result[] = [
-                'row'       => $r,
-                'valid'     => $valid,
-                'skip'      => $skip,
-                'fields'    => $fields,
+                'row' => $r,
+                'valid' => $valid,
+                'skip' => $skip,
+                'fields' => $fields,
             ];
         }
 
         // Remove duplicates
         foreach ($missing as $f => $opts) {
-            $missing[$f] = array_unique($missing[$f]);
+            $missing[$f] = array_values(array_unique($missing[$f]));
         }
 
         return [

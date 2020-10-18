@@ -1,4 +1,5 @@
 <?php
+
 namespace ItemParser;
 
 use ItemParser\Helpers;
@@ -12,6 +13,8 @@ class Field
     private $required = false;
     private $params = [];
     private $replacements = [];
+    private $result = [];
+    private $missing = [];
 
     public function __construct($name, $type = self::TYPE_TEXT, $params = [], $replacements = [])
     {
@@ -29,21 +32,25 @@ class Field
         $this->name = $name;
         return $this;
     }
+
     public function type($type)
     {
         $this->type = $type;
         return $this;
     }
+
     public function params($params)
     {
         $this->params = $params;
         return $this;
     }
+
     public function replacements($replacements)
     {
         $this->replacements = $replacements;
         return $this;
     }
+
     public function required($required = true)
     {
         $this->required = $required;
@@ -55,6 +62,7 @@ class Field
         $this->type('text');
         return $this;
     }
+
     public function param()
     {
         $this->type(self::TYPE_PARAM);
@@ -69,6 +77,7 @@ class Field
 
         return false;
     }
+
     public function isRequired()
     {
         return $this->required;
@@ -78,17 +87,30 @@ class Field
     {
         return $this->name;
     }
+
     public function getType()
     {
         return $this->type;
     }
+
     public function getParams()
     {
         return $this->params;
     }
+
     public function getReplacements()
     {
         return $this->replacements;
+    }
+
+    public function getParseResult()
+    {
+        return $this->result;
+    }
+
+    public function getParseMissing()
+    {
+        return $this->missing;
     }
 
     public function findInReplacements($valText)
@@ -105,108 +127,132 @@ class Field
         return null;
     }
 
-    public static function parse(Field $field = null, $text = '', $opts = [])
+    private function parseText($text)
     {
-        $result = [
-            'text'  => $text,
-            'name'  => null,
-            'type'  => null,
-        ];
-        $unknownOpts = [];
+        $this->result = self::getResultArray($text, $this->getName(), $this->getType());
 
-        if ($field) {
-            $result['name'] = $field->getName();
-            $result['type'] = $field->getType();
+        $valid = true;
+        $value = trim($text);
 
-            // Text field
-            if ($field->is('text')) {
-                $valid = true;
-                $value = trim($text);
-
-                if ($field->isRequired() && !$value) {
-                    $valid = false;
-                }
-
-                $result['valid'] = $valid;
-                $result['value'] = $value;
-
-            // Params field
-            } elseif ($field->is(self::TYPE_PARAM)) {
-                $valid = false;
-                $values = [];
-                $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
-
-                $i = 0;
-                foreach ($textArr as $valText) {
-                    $valText = trim($valText);
-                    if (!$valText) {
-                        continue;
-                    }
-
-                    $pValid = false;
-                    $pSkip = false;
-                    $pReplace = false;
-                    $param = [];
-
-                    $replacement = $field->findInReplacements($valText);
-                    if ($replacement === -1) {
-                        $pSkip = true;
-                    } elseif ($replacement && is_array($replacement)) {
-                        $pReplace = true;
-                        $param = $replacement;
-                    }
-                    if (!$param) {
-                        $param = Helpers::findInParams($valText, $field->getParams());
-                    }
-
-                    if ($param) {
-                        $pValid = true;
-                    } else {
-                        $unknownOpts[] = $valText;
-                    }
-
-                    // Always valid if skipped
-                    // $pValid = $pSkip ? true : $pValid;
-
-                    $values[$i] = [
-                        'valid'     => $pValid,
-                        'skip'      => $pSkip,
-                        'replace'   => $pReplace,
-                        'id'        => $param['id'],
-                        'value'     => $param['value'],
-                        'text'      => $valText,
-                    ];
-
-                    $i++;
-                }
-
-                // Check and skip duplicates
-                $tmp = [];
-                foreach ($values as $i => $value) {
-                    if ($value['valid'] == false || $value['skip'] == true) {
-                        continue;
-                    }
-                    if (!in_array($value['id'], $tmp)) {
-                        $tmp[] = $value['id'];
-                    } else {
-                        $values[$i]['skip'] = true;
-                    }
-                }
-
-                // Check for at least one valid and not skipped param
-                foreach ($values as $i => $value) {
-                    if ($value['valid'] == true && $value['skip'] == false) {
-                        $valid = true;
-                    }
-                }
-
-                $result['valid'] = $valid;
-                $result['value'] = $values;
-            }
-
+        if ($this->isRequired() && !$value) {
+            $valid = false;
         }
 
-        return [$result, $unknownOpts];
+        $this->result['valid'] = $valid;
+        $this->result['value'] = $value;
     }
+
+    private function parseParam($text)
+    {
+        $this->result = self::getResultArray($text, $this->getName(), $this->getType());
+
+        $valid = false;
+        $values = [];
+        $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
+
+        $i = 0;
+        foreach ($textArr as $valText) {
+            $valText = trim($valText);
+            if (!$valText) {
+                continue;
+            }
+
+            $pValid = false;
+            $pSkip = false;
+            $pReplace = false;
+            $param = [];
+
+            $replacement = $this->findInReplacements($valText);
+            if ($replacement === -1) {
+                $pSkip = true;
+            } elseif ($replacement && is_array($replacement)) {
+                $pReplace = true;
+                $param = $replacement;
+            }
+            if (!$param) {
+                $param = Helpers::findInParams($valText, $this->getParams());
+            }
+
+            if ($param) {
+                $pValid = true;
+            } else {
+                $this->missing[] = $valText;
+            }
+
+            // Always valid if skipped
+            // $pValid = $pSkip ? true : $pValid;
+
+            $values[$i] = [
+                'valid' => $pValid,
+                'skip' => $pSkip,
+                'replace' => $pReplace,
+                'id' => $param['id'],
+                'value' => $param['value'],
+                'text' => $valText,
+            ];
+
+            $i++;
+        }
+
+        // Check and skip duplicates
+        $tmp = [];
+        foreach ($values as $i => $value) {
+            if ($value['valid'] == false || $value['skip'] == true) {
+                continue;
+            }
+            if (!in_array($value['id'], $tmp)) {
+                $tmp[] = $value['id'];
+            } else {
+                $values[$i]['skip'] = true;
+            }
+        }
+
+        // Check for at least one valid and not skipped param
+        foreach ($values as $i => $value) {
+            if ($value['valid'] == true && $value['skip'] == false) {
+                $valid = true;
+            }
+        }
+
+        // Valid
+        if (!$this->isRequired()) {
+            $valid = true;
+        }
+
+        $this->result['valid'] = $valid;
+        $this->result['value'] = $values;
+    }
+
+    public static function getResultArray($text, $name = null, $type = null)
+    {
+        return [
+            'text' => $text,
+            'name' => $name,
+            'type' => $type,
+        ];
+    }
+
+    public static function parse(Field $field = null, $text = '', $opts = [])
+    {
+        $result = static::getResultArray($text);
+        $missing = [];
+
+        if ($field) {
+            // Text field
+            if ($field->is(self::TYPE_TEXT)) {
+                $field->parseText($text);
+
+                // Params field
+            } elseif ($field->is(self::TYPE_PARAM)) {
+                $field->parseParam($text);
+            }
+
+            $result = $field->getParseResult();
+            $missing = $field->getParseMissing();
+        }
+
+        return [$result, $missing];
+    }
+
 
 }
