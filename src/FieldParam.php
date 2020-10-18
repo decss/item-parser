@@ -1,42 +1,21 @@
 <?php
 
+
 namespace ItemParser;
 
 use ItemParser\Helpers;
 
-class Field
+class FieldParam extends FieldAbstract
 {
-    const TYPE_TEXT = 'text';
-    const TYPE_PARAM = 'param';
-    private $name;
-    private $type;
-    private $required = false;
     private $params = [];
     private $replacements = [];
-    private $result = [];
-    private $missing = [];
 
     public function __construct($name, $type = self::TYPE_TEXT, $params = [], $replacements = [])
     {
-        $this->name($name);
-        $this->type($type);
+        parent::__construct($name, $type, $params, $replacements);
 
-        if ($type == self::TYPE_PARAM) {
-            $this->params($params);
-            $this->replacements($replacements);
-        }
-    }
-
-    public function name($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function type($type)
-    {
-        $this->type = $type;
-        return $this;
+        $this->params($params);
+        $this->replacements($replacements);
     }
 
     public function params($params)
@@ -51,48 +30,6 @@ class Field
         return $this;
     }
 
-    public function required($required = true)
-    {
-        $this->required = $required;
-        return $this;
-    }
-
-    public function text()
-    {
-        $this->type('text');
-        return $this;
-    }
-
-    public function param()
-    {
-        $this->type(self::TYPE_PARAM);
-        return $this;
-    }
-
-    public function is($type)
-    {
-        if ($this->type === $type) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
     public function getParams()
     {
         return $this->params;
@@ -103,17 +40,7 @@ class Field
         return $this->replacements;
     }
 
-    public function getParseResult()
-    {
-        return $this->result;
-    }
-
-    public function getParseMissing()
-    {
-        return $this->missing;
-    }
-
-    public function findInReplacements($valText)
+    private function findInReplacements($valText)
     {
         foreach ($this->getReplacements() as $replacement => $id) {
             if ($replacement == $valText) {
@@ -127,22 +54,7 @@ class Field
         return null;
     }
 
-    private function parseText($text)
-    {
-        $this->result = self::getResultArray($text, $this->getName(), $this->getType());
-
-        $valid = true;
-        $value = trim($text);
-
-        if ($this->isRequired() && !$value) {
-            $valid = false;
-        }
-
-        $this->result['valid'] = $valid;
-        $this->result['value'] = $value;
-    }
-
-    private function parseParam($text)
+    protected function parseField($text)
     {
         $this->result = self::getResultArray($text, $this->getName(), $this->getType());
 
@@ -221,37 +133,6 @@ class Field
 
         $this->result['valid'] = $valid;
         $this->result['value'] = $values;
-    }
-
-    public static function getResultArray($text, $name = null, $type = null)
-    {
-        return [
-            'text' => $text,
-            'name' => $name,
-            'type' => $type,
-        ];
-    }
-
-    public static function parse(Field $field = null, $text = '', $opts = [])
-    {
-        $result = static::getResultArray($text);
-        $missing = [];
-
-        if ($field) {
-            // Text field
-            if ($field->is(self::TYPE_TEXT)) {
-                $field->parseText($text);
-
-                // Params field
-            } elseif ($field->is(self::TYPE_PARAM)) {
-                $field->parseParam($text);
-            }
-
-            $result = $field->getParseResult();
-            $missing = $field->getParseMissing();
-        }
-
-        return [$result, $missing];
     }
 
 

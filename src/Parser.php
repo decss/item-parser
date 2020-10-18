@@ -1,9 +1,10 @@
 <?php
 
+
 namespace ItemParser;
 
 use ParseCsv\Csv;
-use ItemParser\Field;
+use ItemParser\FieldAbstract as Field;
 use ItemParser\Helpers;
 
 
@@ -17,7 +18,13 @@ class Parser
 
     public function field($index, $name = null, $type = 'text', $params = [], $replacements = [])
     {
-        $field = new Field($name, $type, $params, $replacements);
+        $field = null;
+
+        if ($type == Field::TYPE_TEXT) {
+            $field = new FieldText($name, $type);
+        } elseif ($type == Field::TYPE_PARAM) {
+            $field = new FieldParam($name, $type, $params, $replacements);
+        }
         $this->fields[$index] = $field;
 
         return $field;
