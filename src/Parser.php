@@ -14,6 +14,7 @@ class Parser
     private $colsCnt;
     private $fields;
     private $data;
+    private $result;
     private $skipRows = [];
 
     public function field($index, $name = null, $type = 'text', $params = [], $replacements = [])
@@ -105,10 +106,12 @@ class Parser
             $missing[$f] = array_values(array_unique($missing[$f]));
         }
 
-        return [
+        $this->result = [
             'result' => $result,
             'missing' => $missing,
         ];
+
+        return $this->result;
     }
 
 
