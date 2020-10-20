@@ -56,7 +56,8 @@ class FieldParam extends FieldAbstract
 
     protected function parseField($text)
     {
-        $this->result = self::getResultArray($text, $this->getName(), $this->getType());
+        $result = self::getResultArray($text, $this->getName(), $this->getType());
+        $missing = [];
 
         $valid = false;
         $values = [];
@@ -87,8 +88,10 @@ class FieldParam extends FieldAbstract
 
             if ($param) {
                 $pValid = true;
-            } else {
-                $this->missing[] = $valText;
+            }
+
+            if (!$param || $pReplace) {
+                $missing[] = $valText;
             }
 
             // Always valid if skipped
@@ -131,8 +134,10 @@ class FieldParam extends FieldAbstract
             $valid = true;
         }
 
-        $this->result['valid'] = $valid;
-        $this->result['value'] = $values;
+        $result['valid'] = $valid;
+        $result['value'] = $values;
+
+        return [$result, $missing];
     }
 
 

@@ -13,8 +13,6 @@ abstract class FieldAbstract
     protected $name;
     protected $type;
     protected $required = false;
-    protected $result = [];
-    protected $missing = [];
 
     public function __construct($name, $type = self::TYPE_TEXT, $params = [], $replacements = [])
     {
@@ -76,16 +74,6 @@ abstract class FieldAbstract
         return $this->type;
     }
 
-    public function getParseResult()
-    {
-        return $this->result;
-    }
-
-    public function getParseMissing()
-    {
-        return $this->missing;
-    }
-
     public static function getResultArray($text, $name = null, $type = null)
     {
         return [
@@ -101,9 +89,7 @@ abstract class FieldAbstract
         $missing = [];
 
         if ($field) {
-            $field->parseField($text);
-            $result = $field->getParseResult();
-            $missing = $field->getParseMissing();
+            list($result, $missing) = $field->parseField($text);
         }
 
         return [$result, $missing];

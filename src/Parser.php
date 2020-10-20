@@ -58,10 +58,10 @@ class Parser
         $csv->encoding($encoding, 'UTF-8');
         $csv->auto($content, true, null, ';,');
 
-        $this->setArray($csv->data);
+        $this->setData($csv->data);
     }
 
-    public function setArray($array)
+    public function setData($array)
     {
         $this->rowsCnt = count($array);
         $this->colsCnt = count($array[0]);

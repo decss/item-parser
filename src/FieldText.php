@@ -9,7 +9,7 @@ class FieldText extends FieldAbstract
 {
     protected function parseField($text)
     {
-        $this->result = self::getResultArray($text, $this->getName(), $this->getType());
+        $result = self::getResultArray($text, $this->getName(), $this->getType());
 
         $valid = true;
         $value = trim($text);
@@ -18,8 +18,10 @@ class FieldText extends FieldAbstract
             $valid = false;
         }
 
-        $this->result['valid'] = $valid;
-        $this->result['value'] = $value;
+        $result['valid'] = $valid;
+        $result['value'] = $value;
+
+        return [$result, null];
     }
 
 
