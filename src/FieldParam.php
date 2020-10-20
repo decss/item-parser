@@ -58,13 +58,12 @@ class FieldParam extends FieldAbstract
     {
         $result = self::getResultArray($text, $this->getName(), $this->getType());
         $missing = [];
-
-        $valid = false;
         $values = [];
         $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
 
         $i = 0;
         foreach ($textArr as $valText) {
+            // dbg($valText);
             $valText = trim($valText);
             if (!$valText) {
                 continue;
@@ -122,16 +121,25 @@ class FieldParam extends FieldAbstract
             }
         }
 
+        $valid = true;
+        $activeValues = 0;
         // Check for at least one valid and not skipped param
         foreach ($values as $i => $value) {
-            if ($value['valid'] == true && $value['skip'] == false) {
-                $valid = true;
+            if ($value['valid'] && !$value['skip']) {
+                $activeValues++;
+            }
+
+            if (!$value['valid'] && !$value['skip']) {
+                $valid = false;
             }
         }
 
-        // Valid
-        if (!$this->isRequired()) {
-            $valid = true;
+        // There is no one valid value on required field
+        if ($this->isRequired() && $activeValues == 0) {
+            $valid = false;
+
+        } elseif (!$this->isRequired()) {
+            // $valid = true;
         }
 
         $result['valid'] = $valid;

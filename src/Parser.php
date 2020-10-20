@@ -17,7 +17,7 @@ class Parser
     private $result;
     private $skipRows = [];
 
-    public function field($index, $name = null, $type = 'text', $params = [], $replacements = [])
+    public function field($index, $name, $type = 'text', $params = [], $replacements = [])
     {
         $field = null;
 
@@ -29,6 +29,11 @@ class Parser
         $this->fields[$index] = $field;
 
         return $field;
+    }
+
+    public function getField($index)
+    {
+        return $this->fields[$index];
     }
 
     public function getFields()
@@ -94,7 +99,7 @@ class Parser
             }
 
             $result[] = [
-                'row' => $r,
+                'row' => ($r + 1),
                 'valid' => $valid,
                 'skip' => $skip,
                 'fields' => $fields,
@@ -114,5 +119,18 @@ class Parser
         return $this->result;
     }
 
+    public function result()
+    {
+        return $this->result;
+    }
+
+    public function rows()
+    {
+        return $this->rowsCnt;
+    }
+    public function cols()
+    {
+        return $this->colsCnt;
+    }
 
 }
