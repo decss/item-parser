@@ -11,18 +11,29 @@ abstract class FieldAbstract
     const TYPE_PARAM = 'param';
 
     protected $name;
+    protected $title;
     protected $type;
     protected $required = false;
 
-    public function __construct($name, $type = self::TYPE_TEXT, $params = [], $replacements = [])
+    public function __construct($name, $type = self::TYPE_TEXT, $opts = [])
     {
         $this->name($name);
         $this->type($type);
+
+        if ($opts['title']) {
+            $this->title($opts['title']);
+        }
     }
 
     public function name($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function title($title)
+    {
+        $this->title = $title;
         return $this;
     }
 

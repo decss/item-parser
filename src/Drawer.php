@@ -48,8 +48,13 @@ class Drawer
                 $result .= '<td>' . $item['value'] . '</td>';
             }
             $result = '<tr>' . $result . '</tr>';
+
+        } elseif ($format == 'select') {
+
+
         } elseif ($format == 'json') {
             $result = json_encode($items);
+
         } elseif ($format == 'array') {
             $result = $items;
         }
