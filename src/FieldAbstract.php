@@ -19,10 +19,6 @@ abstract class FieldAbstract
     {
         $this->name($name);
         $this->type($type);
-
-        if ($opts['title']) {
-            $this->title($opts['title']);
-        }
     }
 
     public function name($name)
@@ -78,6 +74,11 @@ abstract class FieldAbstract
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     public function getType()

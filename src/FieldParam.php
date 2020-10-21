@@ -10,15 +10,15 @@ class FieldParam extends FieldAbstract
     private $params = [];
     private $replacements = [];
 
-    public function __construct($name, $type = self::TYPE_TEXT, $opts = [])
+    public function __construct($name, $type, $params = [])
     {
-        parent::__construct($name, $type, $opts);
+        parent::__construct($name, $type);
 
-        if ($opts['params']) {
-            $this->params($opts['params']);
+        if ($params[0]) {
+            $this->params($params[0]);
         }
-        if ($opts['replacements']) {
-            $this->replacements($opts['replacements']);
+        if ($params[1]) {
+            $this->replacements($params[1]);
         }
     }
 

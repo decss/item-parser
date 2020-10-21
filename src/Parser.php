@@ -13,27 +13,38 @@ class Parser
     private $rowsCnt;
     private $colsCnt;
     private $fields;
+    private $fieldsOrder;
     private $data;
     private $result;
     private $skipRows = [];
 
-    public function field($index, $name, $type = 'text', $params = [], $replacements = [])
+    public function textField($name, $opts = [])
     {
-        $field = null;
+        $field = new FieldText($name, Field::TYPE_TEXT);
+        $this->fieldsOrder[] = $name;
+        $this->fields[$name] = $field;
 
-        if ($type == Field::TYPE_TEXT) {
-            $field = new FieldText($name, $type);
-        } elseif ($type == Field::TYPE_PARAM) {
-            $field = new FieldParam($name, $type, $params, $replacements);
-        }
-        $this->fields[$index] = $field;
+        return $field;
+    }
+    public function paramField($name, $params = [])
+    {
+        $field = new FieldParam($name, Field::TYPE_PARAM, $params);
+        $this->fieldsOrder[] = $name;
+        $this->fields[$name] = $field;
 
         return $field;
     }
 
+    public function fieldsOrder($order)
+    {
+        $this->fieldsOrder = $order;
+
+    }
+
     public function getField($index)
     {
-        return $this->fields[$index];
+        $name = $this->fieldsOrder[$index];
+        return $this->fields[$name];
     }
 
     public function getFields()
@@ -86,7 +97,7 @@ class Parser
             $fields = [];
 
             foreach ($rowFields as $f => $text) {
-                $fieldObj = $this->fields[$f];
+                $fieldObj = $this->getField($f);
                 list($fields[$f], $fieldMissing) = Field::parse($fieldObj, $text);
 
                 if (!$skip && $fieldMissing) {
@@ -128,6 +139,7 @@ class Parser
     {
         return $this->rowsCnt;
     }
+
     public function cols()
     {
         return $this->colsCnt;

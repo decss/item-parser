@@ -26,7 +26,7 @@ class Drawer
         $this->parser = $parser;
     }
 
-    public function head($format = 'html')
+    public function head($format = 'html', $opts = [])
     {
         $result = null;
         $items = [];
@@ -50,7 +50,11 @@ class Drawer
             $result = '<tr>' . $result . '</tr>';
 
         } elseif ($format == 'select') {
-
+            $result .= '<td>#</td>';
+            for ($i = 0; $i < $parser->cols(); $i++) {
+                $result .= '<td>' . $this->drawSelect($i) . '</td>';
+            }
+            $result = '<tr>' . $result . '</tr>';
 
         } elseif ($format == 'json') {
             $result = json_encode($items);
@@ -75,11 +79,15 @@ class Drawer
             for ($i = 0; $i < $parser->cols(); $i++) {
                 $field = $parser->getField($i);
                 $value = $res[$r]['fields'][$i];
-                $cells .= self::drawCell($value, $field);
+                $cells .= self::drawCell($value, $field, ['skipRow' => $res[$r]['skip']]);
             }
 
             $trCls = null;
-            if (!$res[$r]['valid']) {
+
+            if ($res[$r]['skip']) {
+                $trCls = 'skipped';
+
+            } elseif (!$res[$r]['valid']) {
                 $trCls = 'invalid';
             }
 
@@ -89,11 +97,41 @@ class Drawer
         return $result;
     }
 
-    private static function drawCell($value, Field $field = null)
+    private function drawSelect($index)
+    {
+        $parser = $this->parser;
+        $currentField = $parser->getField($index);
+        $options = '';
+
+        foreach ($parser->getFields() as $field) {
+            $optCls = '';
+            $selected = $field === $currentField ? 'selected' : '';
+            $name = self::fieldName($field);
+            if ($field->isRequired()) {
+                $name .= ' *';
+                $optCls = 'class="required"';
+            }
+            $options .= "<option value=\"{$field->getName()}\" {$optCls} {$selected}>{$name}</option>";
+        }
+
+
+        $select = '<select name="fieldsOrder[' . $index . ']">'
+                . '<option value="">-</option>'
+                . $options
+                . '</select>';
+
+        return $select;
+    }
+
+    private static function drawCell($value, Field $field = null, $opts = [])
     {
         $tdCls = null;
 
-        if ($field) {
+        if (!$field || $opts['skipRow']) {
+            $text = $value['text'];
+            $tdCls = 'skipped';
+
+        } elseif ($field) {
             if ($field->is(Field::TYPE_TEXT)) {
                 $text = $value['value'];
             } elseif ($field->is(Field::TYPE_PARAM)) {
@@ -103,15 +141,9 @@ class Drawer
             if (!$value['valid']) {
                 $tdCls = 'invalid';
             }
-
-        } else {
-            $text = $value['text'];
-            $tdCls = 'skipped';
         }
 
-        $cell = '<td' . ($tdCls ? ' class=' . $tdCls : '') . '>' . $text . '</td>';
-
-        return $cell;
+        return '<td' . ($tdCls ? ' class=' . $tdCls : '') . '>' . $text . '</td>';
     }
 
     private static function drawTags($items)
@@ -148,14 +180,12 @@ class Drawer
         return $tagCls;
     }
 
-
     private static function fieldName(Field $field = null)
     {
         if ($field) {
-            return $field->getName();
+            return $field->getTitle() ? $field->getTitle() : $field->getName();
         }
         return '';
     }
-
 
 }
