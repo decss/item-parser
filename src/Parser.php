@@ -26,6 +26,7 @@ class Parser
 
         return $field;
     }
+
     public function paramField($name, $params = [])
     {
         $field = new FieldParam($name, Field::TYPE_PARAM, $params);
@@ -44,6 +45,11 @@ class Parser
     public function getField($index)
     {
         $name = $this->fieldsOrder[$index];
+        return $this->fields[$name];
+    }
+
+    public function getFieldByName($name)
+    {
         return $this->fields[$name];
     }
 
@@ -101,7 +107,7 @@ class Parser
                 list($fields[$f], $fieldMissing) = Field::parse($fieldObj, $text);
 
                 if (!$skip && $fieldMissing) {
-                    Helpers::mergeMissing($missing[$f], $fieldMissing);
+                    Helpers::mergeMissing($missing[$fieldObj->getName()], $fieldMissing);
                 }
 
                 if ($fieldObj && !$fields[$f]['valid']) {
@@ -117,14 +123,16 @@ class Parser
             ];
         }
 
-        // Remove duplicates
-        foreach ($missing as $f => $opts) {
-            $missing[$f] = array_values(array_unique($missing[$f]));
+        // TODO: Clear Field's missing if Field was excluded but missing ser from POST
+
+        // Remove duplicates and set missing property
+        foreach ($missing as $name => $opts) {
+            $field = $this->getFieldByName($name);
+            $field->setMissing(array_values(array_unique($missing[$name])));
         }
 
         $this->result = [
-            'result' => $result,
-            'missing' => $missing,
+            'result' => $result
         ];
 
         return $this->result;

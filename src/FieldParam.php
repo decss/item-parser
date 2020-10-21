@@ -8,7 +8,7 @@ use ItemParser\Helpers;
 class FieldParam extends FieldAbstract
 {
     private $params = [];
-    private $replacements = [];
+    private $missing = [];
 
     public function __construct($name, $type, $params = [])
     {
@@ -18,7 +18,7 @@ class FieldParam extends FieldAbstract
             $this->params($params[0]);
         }
         if ($params[1]) {
-            $this->replacements($params[1]);
+            $this->missing($params[1]);
         }
     }
 
@@ -28,9 +28,9 @@ class FieldParam extends FieldAbstract
         return $this;
     }
 
-    public function replacements($replacements)
+    public function missing($missing)
     {
-        $this->replacements = $replacements;
+        $this->missing = $missing;
         return $this;
     }
 
@@ -39,14 +39,37 @@ class FieldParam extends FieldAbstract
         return $this->params;
     }
 
-    public function getReplacements()
+    public function getMissing()
     {
-        return $this->replacements;
+        return $this->missing;
     }
 
-    private function findInReplacements($valText)
+    public function setMissing($array)
     {
-        foreach ($this->getReplacements() as $replacement => $id) {
+        // Filter missing params (from $_POST) by real missing from SCV
+        foreach ($this->missing as $param => $val) {
+            if (!in_array($param, $array)) {
+                unset($this->missing[$param]);
+            }
+        }
+
+        foreach ($array as $param) {
+            if (!isset($this->missing[$param])) {
+                $this->missing[$param] = 0;
+            }
+        }
+
+        // Filter values
+    }
+
+    public function hasMissing()
+    {
+        return count($this->missing) ? true : false;
+    }
+
+    private function findInMissing($valText)
+    {
+        foreach ($this->getMissing() as $replacement => $id) {
             if ($replacement == $valText) {
                 if ($id == -1) {
                     return -1;
@@ -78,7 +101,7 @@ class FieldParam extends FieldAbstract
             $pReplace = false;
             $param = [];
 
-            $replacement = $this->findInReplacements($valText);
+            $replacement = $this->findInMissing($valText);
             if ($replacement === -1) {
                 $pSkip = true;
             } elseif ($replacement && is_array($replacement)) {

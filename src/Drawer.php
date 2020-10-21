@@ -5,6 +5,7 @@ namespace ItemParser;
 
 use ItemParser\Parser;
 use ItemParser\FieldAbstract as Field;
+use ItemParser\FieldParam;
 
 
 class Drawer
@@ -26,7 +27,7 @@ class Drawer
         $this->parser = $parser;
     }
 
-    public function head($format = 'html', $opts = [])
+    public function head($format = 'html')
     {
         $result = null;
         $items = [];
@@ -95,6 +96,45 @@ class Drawer
         }
 
         return $result;
+    }
+
+    public function missing()
+    {
+        $result = $this->parser->result();
+        $table = '';
+
+        $fields = $this->parser->getFields();
+        foreach ($fields as $field) {
+            if ($field instanceof FieldParam && $field->hasMissing()) {
+                $table .= '<table border="1">';
+                $table .= '<tr><td colspan="2"><b>' . self::fieldName($field) . '</b></td></tr>';
+                foreach ($field->getMissing() as $name => $value) {
+                    $table .= '<tr><td>' . $name . '</td>'
+                            . '<td>' . self::drawValues($field, $name, $value) . '</td></tr>';
+                }
+                $table .= '</table>';
+
+            }
+        }
+
+        return $table;
+    }
+
+    private static function drawValues(FieldParam $field, $name, $value)
+    {
+        $options = '<option value="0">-</option>'
+                 . '<option value="-1" ' . ($value == -1 ? 'selected' : '') . '>-- Skip --</option>';
+        foreach ($field->getParams() as $param) {
+            $select = $param['id'] == $value ? 'selected' : '';
+            $options .= '<option value="' . $param['id'] . '" ' . $select . '>' . $param['value'] . '</option>';
+        }
+
+        $name = htmlspecialchars($name);
+        $select = '<select name="missing[' . $field->getName() . '][' . $name . ']">'
+                . $options
+                . '</select>';
+
+        return $select;
     }
 
     private function drawSelect($index)
