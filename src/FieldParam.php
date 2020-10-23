@@ -7,7 +7,14 @@ use ItemParser\Helpers;
 
 class FieldParam extends FieldAbstract
 {
+    /**
+     * @var array Field params (values)
+     */
     private $params = [];
+
+    /**
+     * @var array Params (values) from CSV that was not found in $params
+     */
     private $missing = [];
 
     public function __construct($name, $type, $params = [])
@@ -22,6 +29,12 @@ class FieldParam extends FieldAbstract
         }
     }
 
+    /**
+     * Set params
+     *
+     * @param array $params
+     * @return $this
+     */
     public function params($params)
     {
         $this->params = $params;
@@ -29,22 +42,43 @@ class FieldParam extends FieldAbstract
         return $this;
     }
 
+    /**
+     * Set missing array while adding field
+     *
+     * @param array $missing
+     * @return $this
+     */
     public function missing($missing)
     {
         $this->missing = $missing;
         return $this;
     }
 
+    /**
+     * Get params
+     *
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
     }
 
+    /**
+     * Get missing array
+     *
+     * @return array
+     */
     public function getMissing()
     {
         return $this->missing;
     }
 
+    /**
+     * Set missing after CSV was processed
+     *
+     * @param $array
+     */
     public function setMissing($array)
     {
         // Filter missing params (from $_POST) by real missing from SCV
@@ -61,11 +95,22 @@ class FieldParam extends FieldAbstract
         }
     }
 
+    /**
+     * Check if Field has missing
+     *
+     * @return bool
+     */
     public function hasMissing()
     {
         return count($this->missing) ? true : false;
     }
 
+    /**
+     * Try to search Value in $this->missing array
+     *
+     * @param $valText
+     * @return int|null
+     */
     private function findInMissing($valText)
     {
         foreach ($this->getMissing() as $replacement => $id) {
@@ -174,11 +219,14 @@ class FieldParam extends FieldAbstract
         return [$result, $missing];
     }
 
+    /**
+     * Normalize $this->params aliases
+     */
     private function normalizeAlias()
     {
         foreach ($this->params as $i => $param) {
             if ($param['alias']) {
-                foreach ($param['alias'] as $a => $alias){
+                foreach ($param['alias'] as $a => $alias) {
                     $this->params[$i]['alias'][$a] = Helpers::normalizeStr($alias);
                 }
             }
