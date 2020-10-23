@@ -70,7 +70,7 @@ class Drawer
     public function body()
     {
         $parser = $this->parser;
-        $res = ($parser->result())['result'];
+        $res = $parser->result();
 
         $items = [];
         for ($r = 0; $r < $parser->rows(); $r++) {
@@ -100,7 +100,6 @@ class Drawer
 
     public function missing()
     {
-        $result = $this->parser->result();
         $table = '';
 
         $fields = $this->parser->getFields('selected');

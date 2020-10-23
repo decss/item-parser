@@ -71,6 +71,11 @@ class Parser
         }
     }
 
+    /**
+     * Skipped rows will be marked as "skip" in parse results, params will not processed
+     *
+     * @param $skipRows integer|array Rows to skip, 0 - first row, 1 - second, ...
+     */
     public function skipRows($skipRows)
     {
         if (!is_array($skipRows)) {
@@ -79,12 +84,22 @@ class Parser
         $this->skipRows = $skipRows;
     }
 
+    /**
+     * Set CSV file path
+     *
+     * @param $path string Path to CSV file
+     */
     public function setCsvPath($path)
     {
         $content = file_get_contents($path);
         $this->setCsvContent($content);
     }
 
+    /**
+     * Set CSV file content
+     *
+     * @param $content string Raw CSV content in text format
+     */
     public function setCsvContent($content)
     {
         $csv = new Csv();
@@ -97,7 +112,7 @@ class Parser
         $this->setData($csv->data);
     }
 
-    public function setData($array)
+    private function setData($array)
     {
         $this->rowsCnt = count($array);
         $this->colsCnt = count($array[0]);
@@ -142,9 +157,7 @@ class Parser
             $field->setMissing(array_values(array_unique($missing[$name])));
         }
 
-        $this->result = [
-            'result' => $result
-        ];
+        $this->result = $result;
 
         return $this->result;
     }
