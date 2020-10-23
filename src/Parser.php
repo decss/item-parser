@@ -10,14 +10,49 @@ use ItemParser\Helpers;
 
 class Parser
 {
+    /**
+     * @var integer Count of parsed rows
+     */
     private $rowsCnt;
+
+    /**
+     * @var integer Total columns
+     */
     private $colsCnt;
+
+    /**
+     * @var array Parser Fields
+     */
     private $fields;
+
+    /**
+     * @var array Fields corresponding to columns
+     */
     private $fieldsOrder;
+
+    /**
+     * @var array CSV array
+     */
     private $data;
+
+    /**
+     * @var array Parser result
+     */
     private $result;
+
+    /**
+     * @var array Rows to skip (first row = 0)
+     */
     private $skipRows = [];
 
+
+    /**
+     * Add Text field to parser
+     *
+     * @param string $name Field name for input name and parse result array
+     * @param array $opts
+     * @return FieldText
+     */
     public function textField($name, $opts = [])
     {
         $field = new FieldText($name, Field::TYPE_TEXT);
@@ -27,6 +62,13 @@ class Parser
         return $field;
     }
 
+    /**
+     * Add Param field to parser
+     *
+     * @param string $name Field name for input name and parse result array
+     * @param array $params Params array like [$params, $missing] or just [$params]
+     * @return FieldParam
+     */
     public function paramField($name, $params = [])
     {
         $field = new FieldParam($name, Field::TYPE_PARAM, $params);
@@ -36,23 +78,45 @@ class Parser
         return $field;
     }
 
+    /**
+     * Set fields order to apply each field to corresponding column in CSV
+     *
+     * @param array $order
+     */
     public function fieldsOrder($order)
     {
         $this->fieldsOrder = $order;
-
     }
 
+    /**
+     * Get field by index
+     *
+     * @param int $index
+     * @return Field
+     */
     public function getField($index)
     {
         $name = $this->fieldsOrder[$index];
         return $this->fields[$name];
     }
 
+    /**
+     * Get field by name
+     *
+     * @param string $name
+     * @return Field
+     */
     public function getFieldByName($name)
     {
         return $this->fields[$name];
     }
 
+    /**
+     * Get all fields
+     *
+     * @param string $mode Get all fields or fields set by  fieldsOrder()
+     * @return array
+     */
     public function getFields($mode = 'all')
     {
         if ($mode == 'all') {
@@ -66,7 +130,6 @@ class Parser
                     $result[$name] = $field;
                 }
             }
-            // dbg($result);
             return $result;
         }
     }
@@ -74,7 +137,7 @@ class Parser
     /**
      * Skipped rows will be marked as "skip" in parse results, params will not processed
      *
-     * @param $skipRows integer|array Rows to skip, 0 - first row, 1 - second, ...
+     * @param integer|array $skipRows Rows to skip, 0 - first row, 1 - second, ...
      */
     public function skipRows($skipRows)
     {
@@ -87,7 +150,7 @@ class Parser
     /**
      * Set CSV file path
      *
-     * @param $path string Path to CSV file
+     * @param string $path Path to CSV file
      */
     public function setCsvPath($path)
     {
@@ -98,7 +161,7 @@ class Parser
     /**
      * Set CSV file content
      *
-     * @param $content string Raw CSV content in text format
+     * @param string $content Raw CSV content in text format
      */
     public function setCsvContent($content)
     {
@@ -112,13 +175,11 @@ class Parser
         $this->setData($csv->data);
     }
 
-    private function setData($array)
-    {
-        $this->rowsCnt = count($array);
-        $this->colsCnt = count($array[0]);
-        $this->data = $array;
-    }
-
+    /**
+     * Parse CSV and return results
+     *
+     * @return array
+     */
     public function parse()
     {
         $result = [];
@@ -162,19 +223,41 @@ class Parser
         return $this->result;
     }
 
+    /**
+     * Get parse results
+     *
+     * @return array
+     */
     public function result()
     {
         return $this->result;
     }
 
+    /**
+     * Get parsed rows count
+     *
+     * @return integer
+     */
     public function rows()
     {
         return $this->rowsCnt;
     }
 
+    /**
+     * Get parsed cols count
+     *
+     * @return integer
+     */
     public function cols()
     {
         return $this->colsCnt;
+    }
+
+    private function setData($array)
+    {
+        $this->rowsCnt = count($array);
+        $this->colsCnt = count($array[0]);
+        $this->data = $array;
     }
 
 }

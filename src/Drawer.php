@@ -14,17 +14,35 @@ class Drawer
      * @var \ItemParser\Parser
      */
     private $parser;
+    private $options;
+    private static $textLen = 50;
 
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, $options = [])
     {
         if ($parser) {
             $this->setParser($parser);
+        }
+
+        if ($options) {
+            $this->options = $options;
+            foreach ($options as $name => $option) {
+                $field = $this->parser->getFieldByName($name);
+                if ($field) {
+                    $field->title($option['title']);
+                    $field->display($option['display']);
+                }
+            }
         }
     }
 
     public function setParser(Parser $parser)
     {
         $this->parser = $parser;
+    }
+
+    public function setTextLen($len)
+    {
+        $this->textLen = intval($len);
     }
 
     public function head($format = 'html')
@@ -109,7 +127,7 @@ class Drawer
                 $table .= '<tr><td colspan="2"><b>' . self::fieldName($field) . '</b></td></tr>';
                 foreach ($field->getMissing() as $name => $value) {
                     $table .= '<tr><td>' . $name . '</td>'
-                            . '<td>' . self::drawValues($field, $name, $value) . '</td></tr>';
+                        . '<td>' . self::drawValues($field, $name, $value) . '</td></tr>';
                 }
                 $table .= '</table>';
 
@@ -122,7 +140,7 @@ class Drawer
     private static function drawValues(FieldParam $field, $name, $value)
     {
         $options = '<option value="0">-</option>'
-                 . '<option value="-1" ' . ($value == -1 ? 'selected' : '') . '>-- Skip --</option>';
+            . '<option value="-1" ' . ($value == -1 ? 'selected' : '') . '>-- Skip --</option>';
         foreach ($field->getParams() as $param) {
             $select = $param['id'] == $value ? 'selected' : '';
             $options .= '<option value="' . $param['id'] . '" ' . $select . '>' . $param['value'] . '</option>';
@@ -130,8 +148,8 @@ class Drawer
 
         $name = htmlspecialchars($name);
         $select = '<select name="missing[' . $field->getName() . '][' . $name . ']">'
-                . $options
-                . '</select>';
+            . $options
+            . '</select>';
 
         return $select;
     }
@@ -155,9 +173,9 @@ class Drawer
 
 
         $select = '<select name="fieldsOrder[' . $index . ']">'
-                . '<option value="">-</option>'
-                . $options
-                . '</select>';
+            . '<option value="">-</option>'
+            . $options
+            . '</select>';
 
         return $select;
     }
@@ -172,7 +190,7 @@ class Drawer
 
         } elseif ($field) {
             if ($field->is(Field::TYPE_TEXT)) {
-                $text = $value['value'];
+                $text = self::drawCellText($value['value'], $field->getDisplay());
             } elseif ($field->is(Field::TYPE_PARAM)) {
                 $text = self::drawTags($value['value']);
 
@@ -183,6 +201,31 @@ class Drawer
         }
 
         return '<td' . ($tdCls ? ' class=' . $tdCls : '') . '>' . $text . '</td>';
+    }
+
+    private static function drawCellText($value, $display)
+    {
+        if ($display == 'link') {
+            $text = '<a href="' . $value . '" target="_blank">Link</a>';
+
+        } elseif ($display == 'image') {
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                $link = basename(parse_url($value, PHP_URL_PATH));
+            } else {
+                $link = $value;
+            }
+            $text = '<a href="' . $value . '" target="_blank">' . $link . '</a>';
+
+        } elseif ($display == 'text') {
+            if (mb_strlen($value) > self::$textLen) {
+                $text = substr($value, 0, self::$textLen) . ' ...';
+            }
+
+        } else {
+            $text = $value;
+        }
+
+        return $text;
     }
 
     private static function drawTags($items)
