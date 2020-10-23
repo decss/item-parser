@@ -177,8 +177,10 @@ class FieldParam extends FieldAbstract
     private function normalizeAlias()
     {
         foreach ($this->params as $i => $param) {
-            foreach ($param['alias'] as $a => $alias){
-                $this->params[$i]['alias'][$a] = Helpers::normalizeStr($alias);
+            if ($param['alias']) {
+                foreach ($param['alias'] as $a => $alias){
+                    $this->params[$i]['alias'][$a] = Helpers::normalizeStr($alias);
+                }
             }
         }
     }
