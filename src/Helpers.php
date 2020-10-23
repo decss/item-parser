@@ -93,10 +93,16 @@ class Helpers
 
     public static function normalizeStr($str)
     {
-        $res = mb_strtolower(trim($str));
-        $res = str_replace('ё', 'е', $res);
-        $res = preg_replace(['~\s{2,}~', '~[\t\n]~'], ' ', $res);
-        return $res;
+        static $cache   = [];
+
+        if (!$cache[$str]) {
+            $res = mb_strtolower(trim($str));
+            $res = str_replace('ё', 'е', $res);
+            $res = preg_replace(['~\s{2,}~', '~[\t\n]~'], ' ', $res);
+            $cache[$str] = $res;
+        }
+
+        return $cache[$str];
     }
 
     public static function mergeMissing(&$rowOpts, $fieldOpts)

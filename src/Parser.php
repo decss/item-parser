@@ -53,9 +53,22 @@ class Parser
         return $this->fields[$name];
     }
 
-    public function getFields()
+    public function getFields($mode = 'all')
     {
-        return $this->fields;
+        if ($mode == 'all') {
+            return $this->fields;
+
+        } elseif ($mode == 'selected') {
+            $result = [];
+            foreach ($this->fields as $field) {
+                $name = $field->getName();
+                if (in_array($name, $this->fieldsOrder)) {
+                    $result[$name] = $field;
+                }
+            }
+            // dbg($result);
+            return $result;
+        }
     }
 
     public function skipRows($skipRows)
@@ -122,8 +135,6 @@ class Parser
                 'fields' => $fields,
             ];
         }
-
-        // TODO: Clear Field's missing if Field was excluded but missing ser from POST
 
         // Remove duplicates and set missing property
         foreach ($missing as $name => $opts) {

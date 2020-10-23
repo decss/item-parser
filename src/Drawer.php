@@ -103,7 +103,7 @@ class Drawer
         $result = $this->parser->result();
         $table = '';
 
-        $fields = $this->parser->getFields();
+        $fields = $this->parser->getFields('selected');
         foreach ($fields as $field) {
             if ($field instanceof FieldParam && $field->hasMissing()) {
                 $table .= '<table border="1">';

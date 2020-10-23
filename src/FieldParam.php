@@ -25,6 +25,7 @@ class FieldParam extends FieldAbstract
     public function params($params)
     {
         $this->params = $params;
+        $this->normalizeAlias();
         return $this;
     }
 
@@ -58,8 +59,6 @@ class FieldParam extends FieldAbstract
                 $this->missing[$param] = 0;
             }
         }
-
-        // Filter values
     }
 
     public function hasMissing()
@@ -175,5 +174,13 @@ class FieldParam extends FieldAbstract
         return [$result, $missing];
     }
 
+    private function normalizeAlias()
+    {
+        foreach ($this->params as $i => $param) {
+            foreach ($param['alias'] as $a => $alias){
+                $this->params[$i]['alias'][$a] = Helpers::normalizeStr($alias);
+            }
+        }
+    }
 
 }
