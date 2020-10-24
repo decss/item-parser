@@ -15,6 +15,9 @@ class Drawer
      */
     private $parser;
     private $options;
+    private $hidden = [];
+    private static $orderInput = 'parseOrdering';
+    private static $missingInput = 'parseMissing';
     private static $textLen = 50;
 
     public function __construct(Parser $parser, $options = [])
@@ -45,7 +48,27 @@ class Drawer
         $this->textLen = intval($len);
     }
 
-    public function head($format = 'html')
+    /**
+     * Set name attribute value for ordering select
+     *
+     * @param string $name ordering Select element name
+     */
+    public function setOrderInputName($name)
+    {
+        self::$orderInput = $name;
+    }
+
+    /**
+     * Set name attribute value for missing select
+     *
+     * @param string $name missing Select element name
+     */
+    public function setMissingInputName($name)
+    {
+        self::$missingInput = $name;
+    }
+
+    public function head($format = 'html', $opts = [])
     {
         $result = null;
         $items = [];
@@ -90,8 +113,18 @@ class Drawer
         $parser = $this->parser;
         $res = $parser->result();
 
-        $items = [];
+        $hidden = [];
         for ($r = 0; $r < $parser->rows(); $r++) {
+            if (in_array($r, $this->hidden)) {
+                $hidden['cnt']++;
+                $hidden['min'] = !$hidden['min'] ? $res[$r]['row'] : $hidden['min'];
+                $hidden['max'] = $res[$r]['row'];
+                continue;
+            }
+            if ($hidden) {
+                $result .= self::drawHiddenRow($hidden, $parser->cols());
+            }
+
             $cells = '<td>' . $res[$r]['row'] . '</td>';
             $valid = true;
 
@@ -112,7 +145,24 @@ class Drawer
 
             $result .= '<tr' . ($trCls ? ' class="' . $trCls . '"' : '') . '>' . $cells . '</tr>';
         }
+        if ($hidden) {
+            $result .= self::drawHiddenRow($hidden, $parser->cols());
+        }
 
+        return $result;
+    }
+
+    private static function drawHiddenRow(&$hidden, $cols)
+    {
+        if ($hidden['min'] != $hidden['max']) {
+            $num = $hidden['min'] . '..' . $hidden['max'];
+        } else {
+            $num = $hidden['min'];
+        }
+
+        $result = '<tr><td>' . $num . '</td><td class="hidden" colspan="' . ($cols) . '">'
+            . '... hidden <b>' . $hidden['cnt'] . '</b> line(s) ...</td></tr>';
+        $hidden = [];
         return $result;
     }
 
@@ -123,7 +173,7 @@ class Drawer
         $fields = $this->parser->getFields('selected');
         foreach ($fields as $field) {
             if ($field instanceof FieldParam && $field->hasMissing()) {
-                $table .= '<table border="1">';
+                $table .= '<table>';
                 $table .= '<tr><td colspan="2"><b>' . self::fieldName($field) . '</b></td></tr>';
                 foreach ($field->getMissing() as $name => $value) {
                     $table .= '<tr><td>' . $name . '</td>'
@@ -137,6 +187,39 @@ class Drawer
         return $table;
     }
 
+    public function hideValid()
+    {
+        foreach ($this->parser->result() as $r => $row) {
+            if ($row['valid']) {
+                $rows[] = $r;
+            }
+        }
+        $this->hideRows($rows);
+    }
+
+    public function hideInvalid()
+    {
+        foreach ($this->parser->result() as $r => $row) {
+            if (!$row['valid']) {
+                $rows[] = $r;
+            }
+        }
+        $this->hideRows($rows);
+    }
+
+    /**
+     * Set rows that will not be displayed
+     *
+     * @param array $rows
+     */
+    public function hideRows($rows)
+    {
+        if ($rows && !is_array($rows)) {
+            $rows = [$rows];
+        }
+        $this->hidden = $rows;
+    }
+
     private static function drawValues(FieldParam $field, $name, $value)
     {
         $options = '<option value="0">-</option>'
@@ -145,9 +228,8 @@ class Drawer
             $select = $param['id'] == $value ? 'selected' : '';
             $options .= '<option value="' . $param['id'] . '" ' . $select . '>' . $param['value'] . '</option>';
         }
-
         $name = htmlspecialchars($name);
-        $select = '<select name="missing[' . $field->getName() . '][' . $name . ']">'
+        $select = '<select name="' . self::$missingInput . '[' . $field->getName() . '][' . $name . ']">'
             . $options
             . '</select>';
 
@@ -172,7 +254,7 @@ class Drawer
         }
 
 
-        $select = '<select name="fieldsOrder[' . $index . ']">'
+        $select = '<select name="' . self::$orderInput . '[' . $index . ']">'
             . '<option value="">-</option>'
             . $options
             . '</select>';
@@ -205,8 +287,12 @@ class Drawer
 
     private static function drawCellText($value, $display)
     {
+        $text = '';
+
         if ($display == 'link') {
-            $text = '<a href="' . $value . '" target="_blank">Link</a>';
+            if ($value) {
+                $text = '<a href="' . $value . '" target="_blank">Link</a>';
+            }
 
         } elseif ($display == 'image') {
             if (filter_var($value, FILTER_VALIDATE_URL)) {

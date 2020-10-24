@@ -45,6 +45,13 @@ class Parser
      */
     private $skipRows = [];
 
+    public function __construct($path = null)
+    {
+        if ($path) {
+            $this->setCsvPath($path);
+        }
+    }
+
 
     /**
      * Add Text field to parser
