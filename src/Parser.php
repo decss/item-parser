@@ -10,6 +10,8 @@ use ItemParser\Helpers;
 
 class Parser
 {
+    // TODO: add getMissing() method
+
     /**
      * @var integer Count of parsed rows
      */
@@ -51,7 +53,6 @@ class Parser
             $this->setCsvPath($path);
         }
     }
-
 
     /**
      * Add Text field to parser
