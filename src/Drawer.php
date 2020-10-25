@@ -19,6 +19,8 @@ class Drawer
     private static $orderInput = 'parseOrdering';
     private static $missingInput = 'parseMissing';
     private static $textLen = 50;
+    private static $cropSkipped = true;
+
 
     public function __construct(Parser $parser, $options = [])
     {
@@ -45,7 +47,12 @@ class Drawer
 
     public function setTextLen($len)
     {
-        $this->textLen = intval($len);
+        self::$textLen = intval($len);
+    }
+
+    public function cropSkipped($crop = true)
+    {
+        self::$cropSkipped = $crop;
     }
 
     /**
@@ -268,6 +275,9 @@ class Drawer
 
         if (!$field || $opts['skipRow']) {
             $text = $value['text'];
+            if (self::$cropSkipped) {
+                $text = self::drawCellText($text, 'text');
+            }
             $tdCls = 'skipped';
 
         } elseif ($field) {
@@ -305,6 +315,8 @@ class Drawer
         } elseif ($display == 'text') {
             if (mb_strlen($value) > self::$textLen) {
                 $text = substr($value, 0, self::$textLen) . ' ...';
+            } else {
+                $text = $value;
             }
 
         } else {
