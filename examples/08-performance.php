@@ -32,7 +32,7 @@ shuffle($colors);
 $csvPath = 'data/file.csv';
 $content = file_get_contents($csvPath);
 $tmp = $content;
-$tmp = trim(substr_replace($tmp, null, 0, strpos($tmp, "\r\n")));
+$tmp = trim(substr_replace($tmp, null, 0, strpos($tmp, "\n")));
 for ($i = 0; $i <= 98; $i++) {
     $content .= $tmp . "\r\n";
 }
