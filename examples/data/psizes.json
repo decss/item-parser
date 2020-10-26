@@ -1,0 +1,60 @@
+[{
+    "id": 1,
+    "value": 4
+}, {
+    "id": 2,
+    "value": 5
+}, {
+    "id": 3,
+    "value": 6
+}, {
+    "id": 4,
+    "value": 7
+}, {
+    "id": 5,
+    "value": 8
+}, {
+    "id": 6,
+    "value": 9
+}, {
+    "id": 7,
+    "value": 10
+}, {
+    "id": 8,
+    "value": 11
+}, {
+    "id": 9,
+    "value": 12
+}, {
+    "id": 10,
+    "value": 13
+}, {
+    "id": 11,
+    "value": 14
+}, {
+    "id": 12,
+    "value": "XS"
+}, {
+    "id": 13,
+    "value": "S"
+}, {
+    "id": 14,
+    "value": "M"
+}, {
+    "id": 15,
+    "value": "L"
+}, {
+    "id": 16,
+    "value": "XL"
+}, {
+    "id": 17,
+    "value": "XXL"
+}, {
+    "id": 18,
+    "value": "3XL",
+    "alias": ["XXXL"]
+}, {
+    "id": 19,
+    "value": "4XL",
+    "alias": ["xxxxl"]
+}]
