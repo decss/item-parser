@@ -1,3 +1,19 @@
+<?php
+if (is_file(__DIR__ . '/../vendor/autoload.php')) {
+    require __DIR__ . '/../vendor/autoload.php';
+} else {
+    require __DIR__ . '/../itemparser.lib.php';
+    require __DIR__ . '/../../../parsecsv/php-parsecsv/parsecsv.lib.php';
+}
+if (!function_exists('dump')) {
+    function dump($array) {
+        echo '<p>For better output run: <kbd>composer require --dev symfony/var-dumper:^3.4</kbd></p>';
+        echo '<pre>';
+        print_r($array);
+        echo '</pre>';
+    }
+}
+?>
 <html>
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
@@ -6,17 +22,11 @@
         body, table {margin: 4px;}
         table {font-size: 13px;}
         table td {padding: 2px 3px; border: 1px solid #666;}
-        /*pre {margin-left: 20px;}*/
         select {font-size: 11px;}
         .missing-tables table {display: inline-block; vertical-align: top;}
-        nav {
-            position: fixed;
-            right: 20px;
-        }
+        nav {position: fixed; right: 20px;}
         nav ul {width: 240px;}
-        .content {
-            margin-right: 280px;
-        }
+        .content {margin-right: 280px;}
 
 
         /* Drawer table style */
@@ -70,13 +80,3 @@
     }
     ?>
 </ul>
-<?php
-if (!function_exists('dump')) {
-    function dump($array) {
-        echo '<p>For better output run: <kbd>composer require --dev symfony/var-dumper:^3.4</kbd></p>';
-        echo '<pre>';
-        print_r($array);
-        echo '</pre>';
-    }
-}
-?>
