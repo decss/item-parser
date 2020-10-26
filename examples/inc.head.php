@@ -74,7 +74,9 @@
 if (!function_exists('dump')) {
     function dump($array) {
         echo '<p>For better output run: <kbd>composer require --dev symfony/var-dumper:^3.4</kbd></p>';
-        var_dump($array);
+        echo '<pre>';
+        print_r($array);
+        echo '</pre>';
     }
 }
 ?>
