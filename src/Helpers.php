@@ -67,9 +67,15 @@ class Helpers
     }
 
 
-    public static function findInParams($text, $params)
+    public static function findInParams($text, $params, $name = 0)
     {
         static $cache   = [];
+        static $results = [];
+
+        if (isset($results[$name][$text])) {
+            return $results[$name][$text];
+        }
+        $results[$name][$text] = false;
 
         if (!$cache[$text]) {
             $cache[$text] = self::normalizeStr($text);
@@ -82,13 +88,14 @@ class Helpers
             }
 
             if ($cache[$text] == $cache[$value]) {
-                return $param;
+                $results[$name][$text] = $param;
             }
             if ($param['alias'] && in_array($cache[$text], $param['alias'])) {
-                return $param;
+                $results[$name][$text] = $param;
             }
         }
-        return false;
+
+        return $results[$name][$text];
     }
 
     public static function normalizeStr($str)

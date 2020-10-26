@@ -18,6 +18,7 @@
         "php": ">=5.5",
         "ext-mbstring": "*",
         "ext-json": "*",
+        "ext-iconv": "*",
         "parsecsv/php-parsecsv": "^1.2"
     },
     "require-dev": {

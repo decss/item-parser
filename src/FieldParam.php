@@ -134,7 +134,6 @@ class FieldParam extends FieldAbstract
 
         $i = 0;
         foreach ($textArr as $valText) {
-            // dbg($valText);
             $valText = trim($valText);
             if (!$valText) {
                 continue;
@@ -153,7 +152,7 @@ class FieldParam extends FieldAbstract
                 $param = $replacement;
             }
             if (!$param) {
-                $param = Helpers::findInParams($valText, $this->getParams());
+                $param = Helpers::findInParams($valText, $this->getParams(), $this->getName());
             }
 
             if ($param) {
