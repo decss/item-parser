@@ -1,7 +1,9 @@
 # ItemParser
 
-ItemParser is a simple PHP class directed to transform records from csv to 
-array and map additional data on it (like colors, sizes etc)
+ItemParser is a simple PHP class for parsing Products and other records 
+with their parameters (like colors, sizes etc) from CSV, present results as array 
+or display it as html table 
+
 
 **See examples for description**
 

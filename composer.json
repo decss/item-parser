@@ -1,6 +1,6 @@
 {
     "name": "decss/item-parser",
-    "description": "Item/Product parser from CSV or array",
+    "description": "Parse Items/Products with parameters from CSV. Display result as HTML table",
     "license": "MIT",
     "type": "library",
     "authors": [
