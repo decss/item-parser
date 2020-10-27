@@ -56,7 +56,7 @@ Note that you will need to require all ItemParser dependencies like `ParseCsv`.
 
 Skipped rows can be both valid (`"valid" => true`) or invalid (`"valid" => false`) and vice versa.
 
-As mentioned above, "fields" is an array of Field items. Each Field can be different depending on its type, config and content.
+As mentioned above, `"fields"` is an array of Field items. Each Field can be different depending on its type, config and content.
 All row fields will be presented in result, even if Field was not parsed or was skipped or invalid - there is no matter. 
 
 #### Empty field
@@ -112,7 +112,7 @@ Next is "param" Field:
 ]
 ```
 So you can see that `"value"` of `param` Field is an array. Here is example of both found `[0,2]` and not found `[1]` colors. 
-If there is 2 or mode identical colors (ie `"Black; Red; Black"`) all fo them will be valid but duplicates will be skipped. 
+If there is 2 or more identical colors (ie `"Black; Red; Black"`) all fo them will be valid but duplicates will be skipped. 
 
 
 ## Usage

@@ -88,7 +88,7 @@ Paeser result is an array of rows (lines). Each row matches the corresponding li
 Skipped rows can be both valid ("valid" => true) or invalid ("valid" => false) and vice versa.
 </div>
 <p>
-    As mentioned above, "fields" is an array of Field items. Each Field can be different depending on its type, config and content.<br>
+    As mentioned above, <i>"fields"</i> is an array of Field items. Each Field can be different depending on its type, config and content.<br>
     All row fields will be presented in result, even if Field was not parsed or was skipped or invalid - there is no matter.
 </p>
 
@@ -147,7 +147,7 @@ Next is <i>"param"</i> Field:
     ]
 ]</code></pre>
 So you can see that <i>"value"</i> of <i>param</i> Field is an array. Here is example of both found [0,2] and not found [1] colors.<br>
-If there is 2 or mode identical colors (ie "Black; Red; Black") all fo them will be valid but duplicates will be skipped.
+If there is 2 or more identical colors (ie "Black; Red; Black") all fo them will be valid but duplicates will be skipped.
 </div>
 <hr>
 
