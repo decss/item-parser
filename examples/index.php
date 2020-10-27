@@ -42,7 +42,7 @@ or display it as html table </p>
 <ul>
     <li>Parse data from csv to array</li>
     <li>Display parse results in table view</li>
-    <li>Parse parameters like <i>size, color, material, category, etc</i> from <i>"S; M; L; XL"</i>
+    <li>Parse parameters like <i>size, color, material, category, etc</i> from cells like <i>"S; M; L; XL"</i>
         to array of [id => 1, value => "S"] items</li>
     <li>Detect missing parameters and give an ability to replace or ignore it</li>
     <li>Configure each column type and order or skip it</li>
@@ -80,11 +80,11 @@ Include Composer's autoloader file in your PHP script:
 <div class="mb-3">
 Paeser result is an array of rows (lines). Each row matches the corresponding line in the CSV and generally looks as follows:
 <pre class="mb-0"><code>0 => [
-    "row" => 1,         // line number in CSV
-    "valid" => true,    // <i>true</i> if all row's Fields is valid, <i>false</i> if any is invalid
-    "skip" => false,    // <i>true</i> only if you skip this row by special method
+    "row"    => 1,      // line number in CSV
+    "valid"  => true,   // <i>true</i> if all row's Fields is valid, <i>false</i> if any is invalid
+    "skip"   => false,  // <i>true</i> only if you skip this row by special method
     "fields" => []      // array of row fields (cells)
-],</code></pre>
+]</code></pre>
 Skipped rows can be both valid ("valid" => true) or invalid ("valid" => false) and vice versa.
 </div>
 <p>
@@ -178,7 +178,7 @@ $colors = [
 // Param Missing - skip or replace colors, that was not found in $colors
 $colorsMissing = [
     'Orange' => -1, //  Skip this color
-    'Golden' => 4, //  Replace "Golden" to "Gold" (id = 4)
+    'Golden' => 4,  //  Replace "Golden" to "Gold" (id = 4)
 ];
 $parser->paramField('item_color', [$colors, $colorsMissing])->required();
 
@@ -200,7 +200,7 @@ $drawer = new Drawer($parser, [
 echo '&lt;table class="parse-table"&gt;'
     . '&lt;thead&gt;' . $drawer->head() . '&lt;/thead&gt;'
     . '&lt;tbody&gt;' . $drawer->body() . '&lt;/tbody&gt;'
-    . '&lt;/table&gt;'
+    . '&lt;/table&gt;';
 </code></pre>
 <hr>
 
@@ -219,8 +219,9 @@ $content = file_get_contents('file.csv');
 $parser->setCsvContent($content);
 </code></pre>
 
-<h5 id="configure-columns">Configure columns</h5>// Add text field
-<pre><code>$parser->textField('column_name');
+<h5 id="configure-columns">Configure columns</h5>
+<pre><code>// Add text field
+$parser->textField('column_name');
 // Add required text field
 $parser->textField('column2_name')->required();
 
@@ -229,7 +230,7 @@ $parser->paramField('item_size', [$sizes]);
 // Add required param field with missing colors
 $parser->paramField('item_color', [$colors, $colorsMissing])->required();
 </code></pre>
-
+See examples to get how arguments like <i>$colors</i> and <i>$colorsMissing</i> work<br><br>
 
 <h5 id="configure-parser">Configure parser options</h5>
 <pre><code>// Skip first 2 rows
