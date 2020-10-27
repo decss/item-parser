@@ -264,6 +264,19 @@ echo $drawer->body();
 ```
 
 
+## Changelog
+#### ItemParser 1.0.0
+- Date: 2020-10-26
+- First release
+
+#### ItemParser 1.0.1
+- Date: 2020-10-26
+- Breaking changes: none
+- New features: none
+- Bug fixes: Examples (performance page) 
+- Code quality: Typos
+
+
 ## Credits
 
 * ItemParser is based on [ParseCsv][] class.
