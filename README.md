@@ -2,6 +2,7 @@
 ItemParser is a simple PHP class for parsing Products and other records 
 with their parameters (like colors, sizes etc) from CSV, present results as array 
 or display it as html table 
+<p align="center"><img src="https://repository-images.githubusercontent.com/304974704/d10c5a80-18bf-11eb-9496-8cd7aa9fc8bc"></p>
 
 **See examples for description**
 
