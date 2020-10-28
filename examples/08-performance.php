@@ -7,35 +7,47 @@ use ItemParser\Helpers;
 use ItemParser\Parser;
 
 
-// Generate ~1000 Sizes
-$sizes = json_decode(file_get_contents('data/psizes.json'), true);
-for ($i = 0; $i <= 980; $i++) {
-    $sizes[] = [
-        'id' => ($i + 20),
-        'value' => 'Size ' . $i,
-    ];
-}
-shuffle($sizes);
+function generateParams($name, $size = 1000)
+{
+    $params = [];
+    if ($name == 'size') {
+        $params = json_decode(file_get_contents('data/psizes.json'), true);
+    } elseif ($name == 'color') {
+        $params = json_decode(file_get_contents('data/pcolors.json'), true);
+    }
+    $steps = $size - count($params);
+    for ($i = 0; $i < $steps; $i++) {
+        $params[] = [
+            'id' => ($i + 20),
+            'value' => ucfirst($name) . ' ' . $i,
+        ];
+    }
+    shuffle($params);
 
-// Generate ~1000 Colors
-$colors = json_decode(file_get_contents('data/pcolors.json'), true);
-for ($i = 0; $i <= 990; $i++) {
-    $colors[] = [
-        'id' => ($i + 20),
-        'value' => 'Color ' . $i,
-    ];
+    return $params;
 }
-shuffle($colors);
+
+function generateCsv($size = 1000)
+{
+    $csvPath = 'data/file.csv';
+    $content = file_get_contents($csvPath);
+    $tmp = trim(substr_replace($content, null, 0, strpos($content, "\n")));
+    $steps = $size / count(explode(PHP_EOL, $tmp)) - 1;
+    for ($i = 0; $i < $steps; $i++) {
+        $content .= $tmp . "\r\n";
+    }
+
+    return $content;
+}
+
+
+// Generate ~1000 Sizes
+$sizes = generateParams('size', 1000);
+// Generate ~1000 Colors
+$colors = generateParams('color', 1000);
 
 // Generate ~1000 CSV rows
-$csvPath = 'data/file.csv';
-$content = file_get_contents($csvPath);
-$tmp = $content;
-$tmp = trim(substr_replace($tmp, null, 0, strpos($tmp, "\n")));
-for ($i = 0; $i <= 98; $i++) {
-    $content .= $tmp . "\r\n";
-}
-
+$content = generateCsv(1000);
 
 $tStart = microtime(true);
 $mStart = memory_get_usage();

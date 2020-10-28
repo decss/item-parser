@@ -33,7 +33,7 @@ $parser->textField('item_name')->required();
 $parser->textField('item_sku')->required();
 $parser->textField('item_price')->required();
 $parser->paramField('item_color', [$colors, $colorsMissing]);
-$parser->paramField('item_size', [$sizes, $sizesMissing])->required(true);
+$parser->paramField('item_size', [$sizes, $sizesMissing])->required(true)->delimiters([';', '/']);;
 $parser->textField('item_material');
 $parser->textField('item_desc')->required();
 $parser->textField('item_collection');
