@@ -277,6 +277,13 @@ echo $drawer->body();
 - Bug fixes: Examples (performance page) 
 - Code quality: Typos
 
+#### ItemParser 1.0.2
+- Date: 2020-10-28
+- Breaking changes: none
+- New features: none
+- Bug fixes: none 
+- Code quality: Improved examples/docs, README.md, code typos
+
 
 ## Credits
 
