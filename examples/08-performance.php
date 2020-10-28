@@ -56,7 +56,7 @@ $parser->textField('item_name')->required();
 $parser->textField('item_sku')->required();
 $parser->textField('item_price')->required();
 $parser->paramField('item_color', [$colors, $_POST['parseMissing']['item_color']]);
-$parser->paramField('item_size', [$sizes, $_POST['parseMissing']['item_size']])->required(true);
+$parser->paramField('item_size', [$sizes, $_POST['parseMissing']['item_size']])->required(true)->delimiters([';', '/']);
 $parser->textField('item_size_text');
 $parser->textField('item_collection');
 $parser->textField('item_material');
@@ -142,9 +142,9 @@ $drawer->hideRows(range(15, $parser->rows() - 10));
                 Here is an example of parsing CSV with 1000 rows with 2 Param columns, configured with 1000 param values for each
             </p>
             <p>
-                First 10 lines has 15 colors and 34 sizes. All other lines are the copy of first 10. Whole 1000 lines contains about 1500 colors and 3400 sizes.<br>
+                First 10 lines has 15 colors and 38 sizes. All other lines are the copy of first 10. Whole 1000 lines contains about 1500 colors and 3800 sizes.<br>
                 Assuming that each of the <b>$sizes</b> and <b>$colors</b> arrays has 1000 items, can be concluded
-                that there was 1500 * 1000 + 3400 * 1000 value comparisons which gives us theoretically up to <b>5 000 000</b> comparisons (and this does not include aliases)<br>
+                that there was 1500 * 1000 + 3800 * 1000 value comparisons which gives us theoretically up to <b>5 000 000</b> comparisons or even more (and this does not include aliases)<br>
             </p>
             <p>
                 But the real number is much less due to caching and the search stops when the parameter is found.<br>

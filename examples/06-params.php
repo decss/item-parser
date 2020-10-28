@@ -34,7 +34,7 @@ $parser->textField('item_name')->required();
 $parser->textField('item_sku')->required();
 $parser->textField('item_price')->required();
 $parser->paramField('item_color', [$colors, $colorsMissing]);
-$parser->paramField('item_size', [$sizes, $sizesMissing])->required(true);
+$parser->paramField('item_size', [$sizes, $sizesMissing])->required(true)->delimiters([';', '/']);
 $parser->textField('item_size_text');
 $parser->textField('item_collection');
 $parser->textField('item_material');
@@ -102,6 +102,16 @@ $drawer->hideRows([0, 1, 2, 6, 7, 8]);
             <p>
                 Note that if Field is required and has no one valid values - Field will be invalid
             </p>
+
+            <p>
+                By default cell values separated by one of <kbd>;</kbd> or <kbd>,</kbd> chars. You can define your own delimiters by calling Field's <kbd>delimiters(string|array)</kbd> method:
+            </p>
+            <pre>   $parser->paramField('name', [$params])->delimiters([';', '/']);</pre>
+            <p>
+                If you set more than one delimiter - the most common character will be used (delimiter frequency calculated for each cell separately).
+                You can see how custom delimiter <kbd>/</kbd> works at <b>6</b> line
+            </p>
+
         </div>
 
         <div class="col-6">

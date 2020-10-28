@@ -17,6 +17,11 @@ class FieldParam extends FieldAbstract
      */
     private $missing = [];
 
+    /**
+     * @var string[] Parameter values delimiters
+     */
+    private $delimiters = [';', ','];
+
     public function __construct($name, $type, $params = [])
     {
         parent::__construct($name, $type);
@@ -51,6 +56,23 @@ class FieldParam extends FieldAbstract
     public function missing($missing)
     {
         $this->missing = $missing;
+        return $this;
+    }
+
+    /**
+     * Set parameter values delimiters.
+     * If set 2 or more delimiters - the most frequently occurring in the cell will be chosen
+     *
+     * @param array|string $delimiters
+     * @return $this
+     */
+    public function delimiters($delimiters)
+    {
+        if (is_string($delimiters)) {
+            $delimiters = [$delimiters];
+        }
+        $this->delimiters = $delimiters;
+
         return $this;
     }
 
@@ -130,7 +152,7 @@ class FieldParam extends FieldAbstract
         $result = self::getResultArray($text, $this->getName(), $this->getType());
         $missing = [];
         $values = [];
-        $textArr = Helpers::strToArray($text, ';'); // TODO: make ';' configurable
+        $textArr = Helpers::strToArray($text, $this->delimiters); // TODO: make ';' configurable
 
         $i = 0;
         foreach ($textArr as $valText) {

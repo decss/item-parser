@@ -193,8 +193,8 @@ $parser->textField('column2_name')->required();
 
 // Add param field
 $parser->paramField('item_size', [$sizes]);
-// Add required param field with missing colors
-$parser->paramField('item_color', [$colors, $colorsMissing])->required();
+// Add required param field with missing colors and set possible delimiters for params
+$parser->paramField('item_color', [$colors, $colorsMissing])->required()->delimiters([';', ',', '/']);
 ```
 See examples to get how arguments like `$colors` and `$colorsMissing` work
 
@@ -263,26 +263,6 @@ echo $drawer->head('select');
 // Display table rows
 echo $drawer->body();
 ```
-
-
-## Changelog
-#### ItemParser 1.0.0
-- Date: 2020-10-26
-- First release
-
-#### ItemParser 1.0.1
-- Date: 2020-10-26
-- Breaking changes: none
-- New features: none
-- Bug fixes: Examples (performance page) 
-- Code quality: Typos
-
-#### ItemParser 1.0.2
-- Date: 2020-10-28
-- Breaking changes: none
-- New features: none
-- Bug fixes: none 
-- Code quality: Improved examples/docs, README.md, code typos
 
 
 ## Credits

@@ -227,8 +227,8 @@ $parser->textField('column2_name')->required();
 
 // Add param field
 $parser->paramField('item_size', [$sizes]);
-// Add required param field with missing colors
-$parser->paramField('item_color', [$colors, $colorsMissing])->required();
+// Add required param field with missing colors and set possible delimiters for params
+$parser->paramField('item_color', [$colors, $colorsMissing])->required()->delimiters([';', ',', '/']);
 </code></pre>
 See examples to get how arguments like <i>$colors</i> and <i>$colorsMissing</i> work<br><br>
 

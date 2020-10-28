@@ -34,26 +34,32 @@ class Helpers
     /**
      * Convert string into array using costum delimiter
      * @param string $str String to implode
-     * @param string $delimiter optional Delimiter
+     * @param string|array $delimiters optional Delimiter
      * @param string $filter optional Filter to apply to values ['int'|'mixed']
      * @return array
      */
-    static function strToArray($str, $delimiter = null, $filter = 'mixed')
+    static function strToArray($str, $delimiters = [';', ','], $filter = 'mixed')
     {
         if (is_array($str)) {
             return $str;
         }
 
-        $delimiterArr   = array(';', ',');
-        $array          = array();
+        if (is_string($delimiters)) {
+            $delimiters = [$delimiters];
+        }
+
+        $array = array();
 
         if (strlen($str)) {
-            if ($delimiter == null) {
-                foreach ($delimiterArr AS $symbol) {
+            if (count($delimiters) > 1) {
+                foreach ($delimiters AS $symbol) {
                     $num[]  = substr_count($str, $symbol);
                 }
-                $delimiter  = $delimiterArr[array_keys($num, max($num))[0]];
+                $delimiter  = $delimiters[array_keys($num, max($num))[0]];
+            } else {
+                $delimiter = $delimiters[0];
             }
+
             $arr    = stristr($str, $delimiter) ? explode($delimiter, $str) : array($str);
             foreach ($arr as $value) {
                 $value  = ($filter == 'int') ? intval($value) : $value;
