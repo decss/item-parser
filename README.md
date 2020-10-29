@@ -183,6 +183,12 @@ $parser = new Parser;
 $content = file_get_contents('file.csv');
 $parser->setCsvContent($content);
 ```
+You can access to `Csv()` instance of `ParseCsv` library and configure it directly:
+```php
+$csvObj = $parser->getCsvObj();
+$csvObj->delimiter = ';,';      // Set CSV rows delimiter characters
+```
+
 
 #### Configure columns
 ```php

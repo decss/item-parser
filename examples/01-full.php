@@ -25,6 +25,9 @@ if (!$sizesMissing) {
 // 1. Init Parser and set CSV file path
 $parser = new Parser($csvPath);
 
+// 1.1. Get ParseCsv object and configure it directly
+$parser->getCsvObj()->delimiter = ';,';
+
 // 2.1. Set rows to skip
 $parser->skipRows([0]);
 

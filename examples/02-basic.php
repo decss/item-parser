@@ -41,15 +41,15 @@ $drawer = new Drawer($parser);
         <hr>
 
         <h5>1. Set CSV file or content: </h5>
-        <pre><code// Set filepath
+        <pre><code>// Set filepath
 $parser = new Parser('file.csv');
 // or
 $parser = new Parser;
-$parser-><kbd>setCsvPath('file.csv');</kbd>
+$parser->setCsvPath('file.csv');
 // or Set CSV content
 $parser = new Parser;
 $content = file_get_contents('file.csv');
-$parser-><kbd>setCsvContent($content);</kbd></code></pre>
+$parser->setCsvContent($content);</code></pre>
 
         <h4>2. Configure Fields</h4>
         <p>

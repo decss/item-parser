@@ -13,6 +13,16 @@ class Parser
     // TODO: add getMissing() method
 
     /**
+     * @var \ParseCsv\Csv
+     */
+    private $parseCsv;
+
+    /**
+     * @var string CSV text content
+     */
+    private $content;
+
+    /**
      * @var integer Count of parsed rows
      */
     private $rowsCnt;
@@ -33,11 +43,6 @@ class Parser
     private $fieldsOrder;
 
     /**
-     * @var array CSV array
-     */
-    private $data;
-
-    /**
      * @var array Parser result
      */
     private $result;
@@ -49,6 +54,10 @@ class Parser
 
     public function __construct($path = null)
     {
+        $this->parseCsv = new Csv();
+        $this->parseCsv->heading = false;
+        $this->parseCsv->use_mb_convert_encoding = true;
+
         if ($path) {
             $this->setCsvPath($path);
         }
@@ -156,6 +165,16 @@ class Parser
     }
 
     /**
+     * Get ParseCsv object
+     *
+     * @return \ParseCsv\Csv
+     */
+    public function getCsvObj()
+    {
+        return $this->parseCsv;
+    }
+
+    /**
      * Set CSV file path
      *
      * @param string $path Path to CSV file
@@ -173,14 +192,9 @@ class Parser
      */
     public function setCsvContent($content)
     {
-        $csv = new Csv();
         $encoding = Helpers::mbDetectEncoding($content);
-        $csv->heading = false;
-        $csv->use_mb_convert_encoding = true;
-        $csv->encoding($encoding, 'UTF-8');
-        $csv->auto($content, true, null, ';,');
-
-        $this->setData($csv->data);
+        $this->parseCsv->encoding($encoding, 'UTF-8');
+        $this->content = $content;
     }
 
     /**
@@ -190,11 +204,15 @@ class Parser
      */
     public function parse()
     {
+        $this->parseCsv->auto($this->content);
+        $this->rowsCnt = count($this->parseCsv->data);
+        $this->colsCnt = count($this->parseCsv->data[0]);
+
         $result = [];
         $missing = [];
 
         for ($r = 0; $r < $this->rowsCnt; $r++) {
-            $rowFields = $this->data[$r];
+            $rowFields = $this->parseCsv->data[$r];
             $valid = true;
             $skip = in_array($r, $this->skipRows) ? true : false;
             $fields = [];
@@ -261,11 +279,5 @@ class Parser
         return $this->colsCnt;
     }
 
-    private function setData($array)
-    {
-        $this->rowsCnt = count($array);
-        $this->colsCnt = count($array[0]);
-        $this->data = $array;
-    }
 
 }

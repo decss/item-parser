@@ -33,6 +33,12 @@ if (!function_exists('dd')) {
         nav {position: fixed; right: 20px;}
         nav ul {width: 240px;}
         .content {margin-right: 280px;}
+        pre {
+            max-width: 1000px;
+            background: #eee;
+            padding: 8px 10px;
+            margin: 5px 0;
+        }
 
 
         /* Drawer table style */

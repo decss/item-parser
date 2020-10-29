@@ -185,6 +185,7 @@ $parser->paramField('item_color', [$colors, $colorsMissing])->required();
 // 3. Run parse and get results
 $result = $parser->parse();
 </code></pre>
+<br>
 
 <h5 id="drawer-usage">Drawer usage</h5>
 <pre><code>use ItemParser\Drawer;
@@ -218,6 +219,11 @@ $parser = new Parser;
 $content = file_get_contents('file.csv');
 $parser->setCsvContent($content);
 </code></pre>
+<p>You can access to <i>Csv()</i> instance of <i>ParseCsv</i> library and configure it directly:</p>
+<pre>$csvObj = $parser->getCsvObj();
+$csvObj->delimiter = ';,';  // Set CSV rows delimiter characters
+</pre>
+<br>
 
 <h5 id="configure-columns">Configure columns</h5>
 <pre><code>// Add text field
@@ -253,6 +259,7 @@ $parser->fieldsOrder([
     // further will be skipped
 ]);
 </code></pre>
+<br>
 
 <h5 id="parsing-and-results">Parsing and results</h5>
 <pre><code>// Do parsing and get results
@@ -261,6 +268,7 @@ $result = $parser->parse();
 // Get results after parsing
 $result = $parser->result();
 </code></pre>
+<br>
 
 <h5 id="use-drawer">Use Drawer</h5>
 <pre><code>// Create Drawer and config it
