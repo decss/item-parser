@@ -1,7 +1,7 @@
 {
     "name": "decss/item-parser",
-    "description": "Parse Items/Products with parameters from CSV. Display result as HTML table",
-    "keywords": ["csv", "parser", "product", "csv parser", "product parser", "parsecsv"],
+    "description": "Parse Items/Products with parameters or options from CSV. Display result as HTML table",
+    "keywords": ["csv", "parser", "product", "csv parser", "product parser", "parsecsv", "parameters", "options"],
     "license": "MIT",
     "type": "library",
     "authors": [
