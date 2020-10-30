@@ -4,7 +4,7 @@ with their parameters or options (like colors, sizes etc) from CSV, present resu
 or display it as html table 
 <p align="center"><img src="https://raw.githubusercontent.com/decss/item-parser/assets/ItemParserPromo.png" alt="ItemParser Preview"></p>
 
-**See examples for description**
+### Take a look at [live demo][demo]
 
 
 ## Features
@@ -273,6 +273,7 @@ echo $drawer->body();
 
 ## Credits
 
-* ItemParser is based on [ParseCsv][] class.
+* ItemParser is based on [ParseCsv] class.
 
+[demo]: http://item-parser.herokuapp.com/examples/
 [ParseCsv]: https://github.com/parsecsv/parsecsv-for-php
