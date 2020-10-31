@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "21cb324ab40fe2dcdcf48a73fa7519a2",
+    "content-hash": "5f6bfde17b22dcab44dc9e01998d8041",
     "packages": [
         {
             "name": "parsecsv/php-parsecsv",
@@ -65,9 +65,7 @@
             ],
             "description": "CSV data parser for PHP",
             "time": "2020-04-25T17:17:04+00:00"
-        }
-    ],
-    "packages-dev": [
+        },
         {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.19.0",
@@ -224,6 +222,7 @@
             "time": "2020-10-24T10:57:07+00:00"
         }
     ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
