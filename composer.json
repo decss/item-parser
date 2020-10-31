@@ -1,0 +1,29 @@
+{
+    "name": "decss/item-parser",
+    "description": "Parse Items/Products with parameters or options from CSV. Display result as HTML table",
+    "keywords": ["csv", "parser", "product", "csv parser", "product parser", "parsecsv", "parameters", "options"],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Yaroslav P",
+            "homepage": "https://github.com/decss"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ItemParser\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-iconv": "*",
+        "parsecsv/php-parsecsv": "^1.2"
+    },
+    "require-dev": {
+        "symfony/polyfill-mbstring": "~1.19.0",
+        "symfony/var-dumper": "^3.4"
+    }
+}
