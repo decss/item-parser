@@ -87,7 +87,7 @@ $drawer->hideRows([0, 1, 2, 6, 7, 8]);
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>Missing params</h3>
+            <h3>Missing params <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
             <p>
                 Here you can see how parameters replacement works.

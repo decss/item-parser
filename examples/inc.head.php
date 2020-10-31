@@ -32,7 +32,7 @@ if (!function_exists('dd')) {
         .missing-tables table {display: inline-block; vertical-align: top;}
         nav {position: fixed; right: 20px;}
         nav ul {width: 240px;}
-        .content {margin-right: 280px;}
+        .content {padding-right: 280px;}
         pre {
             max-width: 1000px;
             background: #eee;

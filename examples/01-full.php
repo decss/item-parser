@@ -105,8 +105,9 @@ $drawer->setTextLen(55);
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>All features</h3>
+            <h3>All features <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
+
             <p>Showcase of full-featured <b>Parser</b> and <b>Drawer</b> class</p>
             <p>See course for better understanding</p>
         </div>

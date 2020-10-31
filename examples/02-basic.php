@@ -37,11 +37,11 @@ $drawer = new Drawer($parser);
 <div class="container-fluid">
 <div class="row mb-4">
     <div class="col-6">
-        <h3>Basic usage</h3>
+        <h3>Basic usage <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
         <hr>
 
         <h5>1. Set CSV file or content: </h5>
-        <pre><code>// Set filepath
+<pre>// Set filepath
 $parser = new Parser('file.csv');
 // or
 $parser = new Parser;
@@ -49,7 +49,7 @@ $parser->setCsvPath('file.csv');
 // or Set CSV content
 $parser = new Parser;
 $content = file_get_contents('file.csv');
-$parser->setCsvContent($content);</code></pre>
+$parser->setCsvContent($content);</pre>
 
         <h4>2. Configure Fields</h4>
         <p>

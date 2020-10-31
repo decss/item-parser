@@ -147,7 +147,7 @@ $drawer->hideRows(range(15, $parser->rows() - 10));
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>Performance</h3>
+            <h3>Performance <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
 
             <p>
@@ -161,10 +161,6 @@ $drawer->hideRows(range(15, $parser->rows() - 10));
             <p>
                 But the real number is much less due to caching and the search stops when the parameter is found.<br>
                 You can se how much time it takes, take a look at <b>"Parsing"</b> time (<?php echo $time['Parsing']; ?> sec)
-            </p>
-            <p>
-                Due to significant limitations of computing resources (mainly CPU and disk IO), the execution time can be longer than in production.
-                Run this test in your environment to get accurate results
             </p>
         </div>
 

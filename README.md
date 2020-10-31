@@ -5,6 +5,7 @@ or display it as html table
 <p align="center"><img src="https://raw.githubusercontent.com/decss/item-parser/assets/ItemParserPromo.png" alt="ItemParser Preview"></p>
 
 ### Take a look at [live demo][demo]
+See the `examples` folder for usage examples
 
 
 ## Features
@@ -27,6 +28,14 @@ or display it as html table
 * Shorten long text
 * Hide valid, invalid or custom rows
 
+
+## Requirements
+As noted in `composer.json` production requirements:
+- php >= 5.5
+- php mbstring extension
+- php json extension
+- php iconv extension
+- parsecsv/php-parsecsv
 
 ## Installation
 Using Composer run the following on the command line:

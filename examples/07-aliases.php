@@ -65,12 +65,12 @@ $drawer->setTextLen(10);
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>Param aliases</h3>
+            <h3>Param aliases <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
             In this example we use aliases to find values (colors) that are slightly different but but
             logically the same.<br>
             Lines 5 and 6 has <b>Golden</b> and <b>Golden-orange</b> cell values, but gold color param was formed with <b>alias</b> field:
-            <pre>[
+<pre>[
     'id' => 5,
     'value' => 'Gold',
     'alias' => ['Golden', 'Golden-ORANGE']

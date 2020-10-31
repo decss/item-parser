@@ -77,18 +77,18 @@ $drawer->setTextLen(30);
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>Drawer display</h3>
+            <h3>Drawer display <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
             For better displaying cells with links, images and text you can set appropriate display options.
             It can be done by passing 2nd argument to Drawer(). Also you can set column title like shown below:
-            <pre><code>$drawer = new Drawer($parser, [
+<pre>$drawer = new Drawer($parser, [
     'item_name' => ['title' => 'Product Name'],                     // Set column title
     'item_desc' => ['title' => 'Description', 'display' => 'text'], // Crop text and set column title
     'item_link' => ['display' => 'link'],                           // Display cell as link
     'item_image1' => ['display' => 'image'],                        // Display cell as image
     'item_image2' => ['display' => 'image'],                        // Display cell as image
     'item_image3' => ['display' => 'image'],                        // Display cell as image
-]);</code></pre>
+]);</pre>
             <p>
                 <b>['title' => 'Product Name']</b> - Set column title<br>
                 <b>['display' => 'text']</b> - cell text will be cropped (to 50 chars by default).

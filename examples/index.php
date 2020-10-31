@@ -29,7 +29,7 @@ require 'inc.head.php';
     </ul>
 </nav>
 
-<div class="content">
+<div class="container-fluid content">
 <h3>ItemParser</h3>
 <p>ItemParser is a simple PHP class for parsing Products and other records
 with their parameters (like colors, sizes etc) from CSV, present results as array

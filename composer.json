@@ -23,6 +23,7 @@
         "parsecsv/php-parsecsv": "^1.2"
     },
     "require-dev": {
+        "symfony/polyfill-mbstring": "~1.19.0",
         "symfony/var-dumper": "^3.4"
     }
 }

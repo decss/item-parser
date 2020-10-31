@@ -76,7 +76,7 @@ $drawer = new Drawer($parser, [
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-6">
-            <h3>Select columns</h3>
+            <h3>Select columns <span class="h6">(CSV file used in examples: <a href="data/file.csv">file.csv</a>)</span></h3>
             <hr>
             <p>
                 To make available manual column selection 3 steps are required: <br>
