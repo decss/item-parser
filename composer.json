@@ -21,7 +21,6 @@
         "ext-json": "*",
         "ext-iconv": "*",
         "parsecsv/php-parsecsv": "^1.2",
-        "symfony/polyfill-mbstring": "~1.19.0",
         "symfony/var-dumper": "^3.4"
     }
 }
