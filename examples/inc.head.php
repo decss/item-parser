@@ -59,14 +59,19 @@ if (!function_exists('dd')) {
         }
 
         .parse-table .tag {background-color: #fff; color: #000;}
-        .parse-table .tag.invalid {background-color: #ff2014;}
+        .parse-table .tag.invalid {background-color: #ff372d;}
         .parse-table .tag.replaced {background-color: #14ff3b;}
         .parse-table .tag.skipped {background-color: #ccc; color:#666;}
 
         .parse-table tr.skipped {background-color: #ccc; color:#666;}
-        .parse-table td.invalid {background-color: #ff2014;}
+        .parse-table td.invalid {background-color: #ff372d;}
         .parse-table td.skipped {background-color: #ccc; color:#666;}
-        .parse-table tr.invalid > td:first-child {background-color: #ff2014;}
+        .parse-table tr.invalid > td:first-child {background-color: #ff372d;}
+
+        /*.parse-table select option.required {background: #ff372d;}*/
+        .parse-table select option.required {font-weight: bold;}
+        .parse-table select option.selected,
+        .parse-table select option.required.selected {background: #d1d1d1; color: #666;}
     </style>
 </head>
 <boddy>

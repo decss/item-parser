@@ -110,6 +110,7 @@ $drawer->setTextLen(55);
 
             <p>Showcase of full-featured <b>Parser</b> and <b>Drawer</b> class</p>
             <p>See course for better understanding</p>
+            <p>At the end of the source code of this file, you can find a JS script that prohibits the selection of multiple columns with the same name and marks selected options</p>
         </div>
 
         <div class="col-6">
@@ -157,6 +158,42 @@ $drawer->setTextLen(55);
     <input type="submit" class="btn btn-success btn-lg btn-block" value="Apply and parse">
 </form>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
+        crossorigin="anonymous"></script>
+<script>
+    const parserSelectName = '.parse-table select[name^="parseOrdering"]';
+    function updateParserSelects(el) {
+        let selectList  = $(parserSelectName);
+
+        // Unset selected value in other select boxes
+        if ($(el) && $(el).val()) {
+            selectList.each(function() {
+                if ($(el).attr('name') !== $(this).attr('name') && $(el).val() === $(this).val()) {
+                    $(this).val('');
+                }
+            });
+        }
+
+        // Update 'selected' option's class
+        selectList.find('option').removeClass('selected');
+        selectList.each(function(i, select) {
+            if ($(select).val()) {
+                selectList.find('option[value="' + $(select).val() + '"]').addClass('selected');
+            }
+        });
+    }
+
+    $(function () {
+        // Update selects first time on page load
+        updateParserSelects();
+
+        // Ser onChange listener
+        $('body').on('change', parserSelectName, function() {
+            updateParserSelects(this);
+        });
+    });
+</script>
 
 </body>
 </html>
