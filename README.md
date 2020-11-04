@@ -163,7 +163,7 @@ $result = $parser->parse();
 ```php
 use ItemParser\Drawer;
 
-// 1. Init Parser and set CSV file path
+// Create Drawer and config columns (optional)
 $drawer = new Drawer($parser, [
     'item_name' => ['title' => 'Product Name'],
     'item_link' => ['display' => 'link'],
