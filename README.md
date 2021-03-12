@@ -284,5 +284,5 @@ echo $drawer->body();
 
 * ItemParser is based on [ParseCsv] class.
 
-[demo]: http://item-parser.herokuapp.com/examples/
+[demo]: http://217.16.18.253/item-parser/examples/
 [ParseCsv]: https://github.com/parsecsv/parsecsv-for-php
