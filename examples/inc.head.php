@@ -3,7 +3,11 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 } else {
     require __DIR__ . '/../itemparser.lib.php';
-    require __DIR__ . '/../../../parsecsv/php-parsecsv/parsecsv.lib.php';
+    if (file_exists(__DIR__ . '/../vendor/parsecsv/php-parsecsv/parsecsv.lib.php')) {
+        require __DIR__ . '/../vendor/parsecsv/php-parsecsv/parsecsv.lib.php';
+    } elseif (file_exists(__DIR__ . '/../../../parsecsv/php-parsecsv/parsecsv.lib.php')) {
+        require __DIR__ . '/../../../parsecsv/php-parsecsv/parsecsv.lib.php';
+    }
 }
 if (!function_exists('dump')) {
     function dump($array) {
