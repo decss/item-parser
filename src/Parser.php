@@ -52,11 +52,15 @@ class Parser
      */
     private $skipRows = [];
 
-    public function __construct($path = null)
+    public function __construct($path = null, \ParseCsv\Csv $parseCsv = null)
     {
-        $this->parseCsv = new Csv();
-        $this->parseCsv->heading = false;
-        $this->parseCsv->use_mb_convert_encoding = true;
+        if (!$parseCsv) {
+            $this->parseCsv = new Csv();
+            $this->parseCsv->heading = false;
+            $this->parseCsv->use_mb_convert_encoding = true;
+        } else {
+            $this->parseCsv = $parseCsv;
+        }
 
         if ($path) {
             $this->setCsvPath($path);
