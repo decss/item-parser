@@ -54,12 +54,12 @@ class Parser
 
     public function __construct($path = null, \ParseCsv\Csv $parseCsv = null)
     {
-        if ($parseCsv) {
-            $this->parseCsv = $parseCsv;
-        } else {
+        if (!$parseCsv) {
             $this->parseCsv = new Csv();
             $this->parseCsv->heading = false;
             $this->parseCsv->use_mb_convert_encoding = true;
+        } else {
+            $this->parseCsv = $parseCsv;
         }
 
         if ($path) {

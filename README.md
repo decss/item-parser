@@ -186,6 +186,11 @@ $parser = new Parser('file.csv');
 // or
 $parser = new Parser;
 $parser->setCsvPath('file.csv');
+// also you can use preconfigured parseCsv class
+$parseCsv = new \ParseCsv\Csv();
+$parseCsv->limit = 5;
+$parseCsv->delimiter = "\t";
+$parser = new Parser('file.csv', $parseCsv);
 
 // Set SCV content
 $parser = new Parser;
